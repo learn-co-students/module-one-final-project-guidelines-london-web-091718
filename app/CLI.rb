@@ -1,5 +1,5 @@
 #MAKE A LIST OF THE SEQUENCE OF COMMANDS
-
+require "pry"
 
 
 def get_fav_language(user_instance)
@@ -32,6 +32,7 @@ end
 
 
 def welcome_user
+  #returns user
   puts "Welcome to the GitHub job listings CLI. Please enter your name:"
   username = gets.chomp
   user_search = User.all.find_by(name: username)
@@ -58,7 +59,6 @@ def make_query_empty?(query)
   end
 end
 
-
 def search_query
   #asks the user for the search criteria. Changes to nil if "0"
   puts "Please input the details for your search. Enter 0 if you would like to leave the field blank."
@@ -74,6 +74,23 @@ def search_query
   #collects all the data and shoves in a hash.
   return {salary: sal, city: city, language: lang}
 end
+
+
+
+####CALLING FUNCTIONS
+#####################
+user=welcome_user
+search_query
+
+
+
+
+
+###################
+###################
+
+binding.pry
+0
 
 #Try to implement a loading bar
 
