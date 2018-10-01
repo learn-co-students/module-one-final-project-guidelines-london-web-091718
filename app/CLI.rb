@@ -1,3 +1,7 @@
+#MAKE A LIST OF THE SEQUENCE OF COMMANDS
+
+
+
 def get_fav_language(user_instance)
   #gets the fav language from user if user logs into CLI for first time
   puts "Please tell us your main programming language:"
@@ -15,11 +19,9 @@ def saving_query(user,language)
     #saves the user to database
     user.save
     "Your profile has been saved."
-
   elsif answer=="n"
     #tells the user that his data isn't saved
     puts "You are browsing the listings as incognito."
-
   else
     #if the user is an idiot, ask him again
     puts 'Please answer "y" or "n" '
@@ -49,14 +51,29 @@ def welcome_user
   current_user
 end
 
+def make_query_empty?(query)
+  #in case the user doesn't want to search by a certain criteria, make it nil
+  if query==0
+    query=nil
+  end
+end
+
+
 
 def search_query
-  #asks the
-  puts "How would you like to search for listings? You can search by"
-  puts "l - by language"
-  puts "c - by city"
-  puts "s - by salary"
-  gets.chomp
+  #asks the user for the search criteria. Changes to nil if "0"
+  puts "Please input the details for your search. Enter 0 if you would like to leave the field blank."
+  puts "Search by language:"
+  lang=gets.chomp
+  make_query_empty?(lang)
+  puts "By city:"
+  city=gets.chomp
+  make_query_empty?(city)
+  puts "By salary:"
+  sal=gets.chomp
+  make_query_empty?(sal)
+  #collects all the data and shoves in a hash.
+  return {salary: sal, city: city, language: lang}
 end
 
 #Try to implement a loading bar
