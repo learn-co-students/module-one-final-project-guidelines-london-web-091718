@@ -1,4 +1,7 @@
 #MAKE A LIST OF THE SEQUENCE OF COMMANDS
+
+require 'rest-client'
+require 'json'
 require "pry"
 
 
@@ -77,17 +80,10 @@ end
 
 
 
-####CALLING FUNCTIONS
-#####################
+
+####CALLING FUNCTIONS###
 user=welcome_user
 search_query
-
-
-
-
-
-###################
-###################
 
 binding.pry
 0
@@ -97,3 +93,7 @@ binding.pry
 # def listings_count(returned_results_array_or_hash)
 #   puts "A total of #{returned_results_array_or_hash.count} listings has been found."
 # end
+
+# url = 'https://api.spotify.com/v1/search?type=artist&q=tycho'
+# response = RestClient.get(url)
+# JSON.parse(response)
