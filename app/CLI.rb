@@ -8,13 +8,14 @@ require "pry"
 def get_fav_language(user_instance)
   #gets the fav language from user if user logs into CLI for first time
   puts "Please tell us your main programming language:"
-  favorite_language = STDIN.gets.chomp
-  user_instance.fav_language = favorite_language
-  return favorite_language
+  favourite_language = STDIN.gets.chomp
+  user_instance.fav_language = favourite_language
+  return favourite_language
   #returns the users favorite language to use in other methods
 end
 
 def saving_query(user,language)
+  #CURRENTLY UNUSED
   #asks if the user would like to save his info
   puts "Would you like to save the information? (y/n)"
   answer = STDIN.gets.chomp
@@ -45,93 +46,77 @@ def welcome_user
 end
 
 def make_query_empty?(query)
-  #in case the user doesn't want to search by a certain criteria, make it nil
+  #CURRENTLY UNUSED
   if query == 0
     query = nil
   end
 end
 
 def search_query(user)
+  #as of now this method does not save anything to db, just searches.
   puts "Would you like to search by [C]ity, [L]anguage or [J]ob keyword? /n [E]xit"
-
   city = ''
   language = ''
   job = ''
+  search_parameter=Hash.new(0)
+  #TRY USING WHILE OR SOMETHING THAT DOES NOT EXIT
   loop do
     choice = STDIN.gets.chomp.upcase
     case choice
     when 'C'
       puts "Please enter the city:"
       city = STDIN.gets.chomp
+      search_parameter  [:city]=city
     when 'L'
-      puts "Please enter your favourite language:"
+      puts "Please enter your favourite programming language:"
       lang = STDIN.gets.chomp
+      search_parameter[:language]=lang
     when 'J'
       puts "Please enter a keyword e.g 'Full-Stack'"
       keywords = STDIN.gets.chomp
+      search_parameter[:keywords]=keywords
       #when writing calling method check for spelling (i.e. join(-), split, join(' '), etc...)
     when 'E'
-      "Goodbye! Thank you for visiting our jobsearch."
+      "Goodbye! Thank you for visiting our tech jobsearch."
+      # Would you like to search again?"
+      exit(0)
+    else
+      search_query(user)
     end
+    return search_parameter
+    #returns search hash {type => actual_query}
   end
-
-  #if user_input == "L"
-  make_query_empty?(sal)
-  hash= {city: city, fav_language: lang}
-  #collects all the data and shoves in a hash.
-  #the method is defined in case of looping:
-  def would_you_like_to_save(user,hash)
-    puts "Would you like to save these details for future searches? y/n"
-    answer=STDIN.gets.chomp
-      if ans="y"
-        user.update(hash)
-      elsif ans="n"
-        puts "Okay, browsing as incognito"
-      else
-        puts "Please choose y or n"
-        would_you_like_to_save
-      end
-  end
-  #the saving method is called here:
-  would_you_like_to_save(user,hash)
-  #ASK IF YOU LIKE TO SAVE
-  #if yes
-  #user.language = lang
-  # user.city=city
-  # user.salary=sal
-  #user.update(hash)
-  #else
-  #search dont save  use hash.
-
-
-
-  #
-  # query = {}
-  #
-
-
-  #needs methods to shove fav city, lang and sal into
-  #user db (by city and job IDs)
-
-
-
+  would_you_like_to_save(user, search_parameter)
 end
 
 
+  #method for requesting user to save data to db:
+  def would_you_like_to_save(user,data_hash)
+    puts "Would you like to save these details for future searches? [Y]es or [N]o"
+    ans=STDIN.gets.chomp.downcase
+      if ans == "y"
+        user.update(data_hash)
+      elsif ans == "n"
+      else
+        puts "Please choose y or n"
+        would_you_like_to_save(user,data_hash)
+      end
+  end
 
+  # puts Rainbow("\nSymptoms of #{self.name}\n").color("#203259").bright + Rainbow(Format.wrap("\n\n#{self.symptoms[10..-1]}", 70)).color("#191921").gsub('\n  \t\t\n  \t\t', " ")
+
+
+########################
 ####CALLING FUNCTIONS###
+
 #patrick=User.second
 # user=welcome_user
-# search_query(user)
+# job_query=search_query(user)
+#job_search=Patrick's_method(job_query)
 
-#binding.pry
-0
+#######################
+#######################
 
-#Try to implement a loading bar
-
-# def listings_count(returned_results_array_or_hash)
-#   puts "A total of #{returned_results_array_or_hash.count} listings has been found."
-# end
 
 # url = 'https://api.spotify.com/v1/search?type=artist&q=tycho'
 # response = RestClient.get(url)

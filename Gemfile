@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 source "https://rubygems.org"
 
+gem "rainbow"
 gem "rest-client"
 gem "json"
 gem "sinatra-activerecord"
