@@ -4,6 +4,8 @@ def load_city_hash
   JSON.parse(response_string)
 end
 
+#https://api.teleport.org/api/cities/?search=#{city.name}
+
 def load_job_hash
   puts 'Loading your results...'
   response_string = RestClient.get('')
@@ -13,3 +15,5 @@ end
 job_seed(load_job_hash)
 cityjob_seed(load_cityjob_hash)
 city_seed(load_city_hash)
+
+#EasyTranslate.api_key = AIzaSyC8k2GK8mYcrkaoTf8NfqAxPZzj6r3Zif8

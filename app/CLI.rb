@@ -70,19 +70,19 @@ def search_query(user)
   #TRY USING WHILE OR SOMETHING THAT DOES NOT EXIT
   #Also try if..
 
-  puts Rainbow("Please enter the city:").pink
+  puts Rainbow("Please enter the city:").green
   puts "Press enter to search by language instead. Enter 'exit' to exit"
   city = STDIN.gets.chomp
   search_parameter  [:city]=city
 
   exit?(search_parameter,:city)
-  puts Rainbow("Please enter your favourite programming language:").pink
+  puts Rainbow("Please enter your favourite programming language:").green
   puts "Press enter to search by keyword instead. Enter 'exit' to exit"
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
 
   exit?(search_parameter,:language)
-  puts Rainbow("Please enter a keyword e.g 'Full-Stack'").pink
+  puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
   puts "Press enter if you have finished. Enter 'exit' to exit"
   keywords = STDIN.gets.chomp
   search_parameter[:keywords]=keywords
