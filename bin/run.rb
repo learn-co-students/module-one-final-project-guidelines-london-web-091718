@@ -1,8 +1,5 @@
 require_relative '../config/environment'
 
-
-
-
 user=welcome_user
 job_query=search_query(user)
 

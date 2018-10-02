@@ -11,10 +11,18 @@ class Job < ActiveRecord::Base
     puts Rainbow("Title: ").red + data["title"]
     puts Rainbow("Location: ").red + data["location"]
     puts Rainbow("Date added: ").red + data["created_at"]
-    des = data["description"][0..100].split("<p>").join("</p>").split("</p>").join("<br>").split("<br>").join("<ul>").split("<ul>").join("<li>").split("<li>").join("<h1>").split("<h1>").join("<h4>").split("<h4>").join("")
+    des = ''
+    if verbose
+      des = data["description"]
+      puts Rainbow("Description: ").red + des
+    else
+      des = data["description"][0..100].split("<p>").join("</p>").split("</p>").join("<br>").split("<br>").join("<ul>").split("<ul>").join("<li>").split("<li>").join("<h1>").split("<h1>").join("<h4>").split("<h4>").join("")
+      puts Rainbow("Description: ").red + des + "..."
+    end
     # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en)
-    puts Rainbow("Description: ").red + des + "..."
     #add <i> , <br> etc
+    puts ""
+    puts "URL: " + data["url"].gsub(URI.regexp, '<a href="\0">\0</a>')
     puts ""
   end
 
