@@ -5,6 +5,14 @@ require 'json'
 require "pry"
 
 
+def exit?(hash,parameter)
+  if hash[parameter]=="exit"
+    puts "Goodbye! Thank you for visiting our tech jobsearch."
+    exit(0)
+  end
+end
+
+
 def get_fav_language(user_instance)
   #gets the fav language from user if user logs into CLI for first time
   puts "Please tell us your main programming language:"
@@ -37,7 +45,7 @@ end
 
 def welcome_user
   #returns user
-  puts "Welcome to the GitHub job listings CLI. Please enter your name:"
+  puts "Welcome to our tech jobsearch! Please enter your name:"
   username = STDIN.gets.chomp
   user_search = User.all.find_or_create_by(name: username)
   #looks the user up in the DB by name
@@ -54,39 +62,38 @@ end
 
 def search_query(user)
   #as of now this method does not save anything to db, just searches.
-  puts "Would you like to search by [C]ity, [L]anguage or [J]ob keyword? /n [E]xit"
+  # puts "Would you like to search by [C]ity, [L]anguage or [J]ob keyword? /n [E]xit"
   city = ''
   language = ''
   job = ''
   search_parameter=Hash.new(0)
   #TRY USING WHILE OR SOMETHING THAT DOES NOT EXIT
-  loop do
-    choice = STDIN.gets.chomp.upcase
-    case choice
-    when 'C'
-      puts "Please enter the city:"
-      city = STDIN.gets.chomp
-      search_parameter  [:city]=city
-    when 'L'
-      puts "Please enter your favourite programming language:"
-      lang = STDIN.gets.chomp
-      search_parameter[:language]=lang
-    when 'J'
-      puts "Please enter a keyword e.g 'Full-Stack'"
-      keywords = STDIN.gets.chomp
-      search_parameter[:keywords]=keywords
-      #when writing calling method check for spelling (i.e. join(-), split, join(' '), etc...)
-    when 'E'
-      "Goodbye! Thank you for visiting our tech jobsearch."
-      # Would you like to search again?"
-      exit(0)
-    else
-      search_query(user)
-    end
-    return search_parameter
-    #returns search hash {type => actual_query}
-  end
+  #Also try if..
+
+  puts Rainbow("Please enter the city:").pink
+  puts "Press enter to search by language instead. Enter 'exit' to exit"
+  city = STDIN.gets.chomp
+  search_parameter  [:city]=city
+
+  exit?(search_parameter,:city)
+  puts Rainbow("Please enter your favourite programming language:").pink
+  puts "Press enter to search by keyword instead. Enter 'exit' to exit"
+  lang = STDIN.gets.chomp
+  search_parameter[:language]=lang
+
+  exit?(search_parameter,:language)
+  puts Rainbow("Please enter a keyword e.g 'Full-Stack'").pink
+  puts "Press enter if you have finished. Enter 'exit' to exit"
+  keywords = STDIN.gets.chomp
+  search_parameter[:keywords]=keywords
+
+  exit?(search_parameter,:keywords)
+
+  #when writing calling method check for spelling (i.e. join(-), split, join(' '), etc...)
+  # "Goodbye! Thank you for visiting our tech jobsearch."
+
   would_you_like_to_save(user, search_parameter)
+  return search_parameter
 end
 
 
@@ -109,10 +116,7 @@ end
 ########################
 ####CALLING FUNCTIONS###
 
-#patrick=User.second
-# user=welcome_user
-# job_query=search_query(user)
-#job_search=Patrick's_method(job_query)
+
 
 #######################
 #######################
