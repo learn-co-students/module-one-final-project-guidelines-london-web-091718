@@ -40,7 +40,7 @@ def welcome_user
   username = gets.chomp
   user_search = User.all.find_by(name: username)
   #looks the user up in the DB by name
-  if user_search == true
+  if user_search.nil? == false || user_search.length>0
     #if the user exists - welcomes him back
     puts "Welcome back, #{username}."
     current_user = user_search
