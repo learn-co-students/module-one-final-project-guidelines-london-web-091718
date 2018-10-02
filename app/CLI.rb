@@ -87,10 +87,10 @@ end
 
 
 ####CALLING FUNCTIONS###
-user=welcome_user
-search_query(user) if
+# user=welcome_user
+# search_query(user)
 
-binding.pry
+#binding.pry
 0
 
 #Try to implement a loading bar
