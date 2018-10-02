@@ -40,7 +40,7 @@ def welcome_user
   username = gets.chomp
   user_search = User.all.find_by(name: username)
   #looks the user up in the DB by name
-  if user_search == true
+  if user_search.nil? == false || user_search.length>0
     #if the user exists - welcomes him back
     puts "Welcome back, #{username}."
     current_user = user_search
@@ -62,7 +62,7 @@ def make_query_empty?(query)
   end
 end
 
-def search_query
+def search_query(user)
   #asks the user for the search criteria. Changes to nil if "0"
   puts "Please input the details for your search. Enter 0 if you would like to leave the field blank."
   puts "Search by language:"
@@ -75,15 +75,20 @@ def search_query
   sal = gets.chomp
   make_query_empty?(sal)
   #collects all the data and shoves in a hash.
+  user.fav_language = lang
+
+  #needs methods to shove fav city, lang and sal into
+  #user db (by city and job IDs)
+
+
   return {salary: sal, city: city, language: lang}
 end
 
 
 
-
 ####CALLING FUNCTIONS###
 user=welcome_user
-search_query
+search_query(user) if
 
 binding.pry
 0
