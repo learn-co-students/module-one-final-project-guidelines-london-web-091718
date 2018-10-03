@@ -47,9 +47,9 @@ require 'pry'
   end
 
 
-  def pokemon_names_array
-    pokemon_array.collect {|pokemon| get_pokemons_name(pokemon).capitalize}
-  end
+  # def pokemon_names_array
+  #   pokemon_array.collect {|pokemon| get_pokemons_name(pokemon).capitalize}
+  # end
 
   def create_pokemon_instances(array_of_pokehashes)
     array_of_pokehashes.each do |pokehash|

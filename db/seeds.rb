@@ -1,9 +1,9 @@
-require_all '../lib'
+require_all 'lib'
 require 'rest-client'
 require 'json'
 require 'pry'
 
-
+Pokemon.destroy_all
 
   def get_character_properties_from_api(character)
     response_string = RestClient.get("http://pokeapi.co/api/v2/pokemon/#{character}")
@@ -28,8 +28,8 @@ require 'pry'
   def pokemon_array
     pokemons = []
 
-    until pokemons.length >= 10
-      pokemon = get_character_properties_from_api(rand(1..100))
+    until pokemons.length >= 150
+      pokemon = get_character_properties_from_api(pokemons.length + 1)
       required_data = {
         name: get_pokemons_name(pokemon),
         health: get_pokemons_health(pokemon),
