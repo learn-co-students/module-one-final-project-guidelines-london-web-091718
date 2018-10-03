@@ -1,4 +1,3 @@
-require_all 'lib'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -52,4 +51,4 @@ require 'pry'
     end
   end
 
-  # create_pokemon_instances(pokemon_array)
+  create_pokemon_instances(pokemon_array)
