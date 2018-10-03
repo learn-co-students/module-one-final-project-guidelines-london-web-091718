@@ -6,10 +6,11 @@ require "pry"
 
 
 def exit?(parameter)
-  if parameter=="exit"
+  if parameter.downcase=="exit"
     puts "Goodbye! Thank you for visiting our tech jobsearch."
     exit(0)
   end
+  return parameter
 end
 
 
@@ -17,6 +18,7 @@ def get_fav_language(user_instance)
   #gets the fav language from user if user logs into CLI for first time
   puts "Please tell us your main programming language:"
   favourite_language = STDIN.gets.chomp
+  exit?(favourite_language)
   user_instance.fav_language = favourite_language
   return favourite_language
   #returns the users favorite language to use in other methods
@@ -27,6 +29,7 @@ def saving_query(user,language)
   #asks if the user would like to save his info
   puts "Would you like to save the information? (y/n)"
   answer = STDIN.gets.chomp
+  exit?(answer)
   if answer == "y"
     #saves the user to database
     user.save
@@ -53,6 +56,7 @@ def welcome_user
   #returns user
   puts "Welcome to our tech jobsearch! Please enter your name:"
   username = STDIN.gets.chomp
+  exit?(username)
   user_search = User.all.find_or_create_by(name: username)
   #looks the user up in the DB by name
   puts "Welcome, #{username}."
@@ -69,19 +73,18 @@ def search_query(user)
 
 
   puts Rainbow("Please enter the city:").green
-  puts "Press enter to search by language instead. Enter 'exit' to exit"
+  puts "Press enter to search by language instead. You can enter 'exit' to exit anytime."
   city = STDIN.gets.chomp
+  exit?(city)
   search_parameter[:city]=city
 
   exit?(city)
-  puts Rainbow("Please enter your favourite programming language:").green
-  puts "Press enter to search by keyword instead. Enter 'exit' to exit"
+  puts Rainbow("Please enter your preffered programming language:").green
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
 
   exit?(lang)
   puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
-  puts "Press enter if you have finished. Enter 'exit' to exit"
   keywords = STDIN.gets.chomp
   search_parameter[:keywords]=keywords
 
@@ -97,6 +100,7 @@ end
   def would_you_like_to_save(user,data_hash)
     puts "Would you like to save these details for future searches? [Y]es or [N]o"
     ans=STDIN.gets.chomp.downcase
+    exit?(ans)
       if ans == "y"
         user.update(data_hash)
       elsif ans == "n"
@@ -109,7 +113,7 @@ end
 
   def job_search_results(job_query)
     puts "Loading Jobs..."
-    url = Job.base_url("#{job_query[:keywords]}#{job_query[:language]},#{job_query[:city]}")
+    url = Job.base_url(job_query[:keywords],job_query[:language],job_query[:city])
     response = RestClient.get(url)
     puts url
     JSON.parse(response)
@@ -125,30 +129,36 @@ end
       i+=1
       list_of_results << result
     end
+    list_of_results
   end
 
   def chosen_job(list_of_results)
-    chosen_job_num = 800
-    while chosen_job_num != 'q' && (chosen_job_num.is_a? Integer)
-      puts "Select a number from the above list to view further job details"
-      #check if the user selected the correct listing
-      chosen_job_num = gets.chomp
-      chosen_job = list_of_results[chosen_job_num.to_i - 1]
-      puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
-      puts ""
-      #offer the user to open the listing in his browser using the :url
+    # FORCE IT TO_INTEGERT
+    puts "Select a number from the above list to view further job details"
+    chosen_job_num = gets
+    if (chosen_job_num.to_i.is_a? Integer)==false
+      puts "Please select a valid listing!"
+      chosen_job(list_of_results)
+    elsif chosen_job_num.to_i>list_of_results.length
+      puts "Please select a valid listing!"
+      chosen_job(list_of_results)
+    else
+        #check if the user selected the correct listing
+        chosen_job = list_of_results[chosen_job_num.to_i - 1]
+        puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
+        puts ""
+      end
       return chosen_job
     end
-  end
 
 
-  # =========================================================
-
-  def more_results_with_error_test(chosen_job)
+  def more_results_with_error_test(chosen_job,job_results_function)
+    #list of results needs to be passed ^ so we can return to main menu
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
+    exit?(city_more)
     if city_more=="y"
-      puts 'Loading your city information...'
+      puts "Loading city information..."
       city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
       # binding.pry
         begin
@@ -157,21 +167,71 @@ end
           puts 'Access denied'
           return err.response
         rescue RestClient::ExceptionWithResponse => err
-          puts 'Sorry, we are unable to find any info on that City at the moment :('
+          puts 'Sorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page.'
           #if it fails to find anything, take the user back to the search screen (run method on line 20 again)
           # show sad_cat.jpg
         else
           puts "Fetching information about #{city_variable}"
           categories =  JSON.parse(resp)["categories"]
+        #  binding.pry
           categories.each do |c|
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
-          #RETURN PERSON BACK TO MENU
+          store_cityjob_in_database(chosen_job["location"], chosen_job["title"],formatting_categories(categories))
         end#rescue
       elsif city_more=="n"#if
-        puts "Please use the website to apply for the job if you are interested. Search again if you wish to see other listings."
+        puts "would you like to exit?y/n"
+        ans=gets.chomp
+        exit?(ans)
+        if ans=="y"
+          exit(0)
+        end
+      else
+        puts "please provide a valid command"
+        more_results_with_error_test(chosen_job,job_results_function)
     end#if
   end#def
+
+
+  def formatting_categories(categories)
+    cats=Hash.new(0)
+    categories.each do |c|
+      key=c["name"]
+      value=c["score_out_of_10"]
+      cats[key]=value.to_s.to_i.to_s + " /10"
+    end
+    cats
+  end
+
+def store_cityjob_in_database(city,job,city_stats,url="")
+  #binding.pry
+  hash={}
+  ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
+  ncm.each do |arr|
+    hash[arr[0]]=arr[1]
+  end
+#  binding.pry
+  n=("#{city} - #{job}")
+  binding.pry
+
+  c=City.new
+  c.name=city
+  j=Job.new
+  j.title=job
+
+  cityjob=CityJob.new
+  cityjob.name=n
+  cityjob.city=c
+  cityjob.job=j
+  cityjob.city.update(hash)
+
+  puts "Your search has been added to your search history"
+  puts ""
+  puts ""
+  puts "Returning you to the results list..."
+  puts ""
+end
+
 
 
   # puts Rainbow("\nSymptoms of #{self.name}\n").color("#203259").bright + Rainbow(Format.wrap("\n\n#{self.symptoms[10..-1]}", 70)).color("#191921").gsub('\n  \t\t\n  \t\t', " ")

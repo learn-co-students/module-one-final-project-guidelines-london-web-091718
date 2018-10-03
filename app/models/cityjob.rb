@@ -1,6 +1,6 @@
 class CityJob < ActiveRecord::Base
 
-belongs_to :cities
-belongs_to :jobs
+belongs_to :city
+belongs_to :job
 
 end

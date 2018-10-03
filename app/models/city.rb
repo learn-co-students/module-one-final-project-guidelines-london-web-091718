@@ -1,6 +1,6 @@
 class City < ActiveRecord::Base
 
-  has_many :job_cities
-  has_many :jobs, through: :job_cities
+  has_many :cityjobs
+  has_many :jobs, through: :cityjobs
 
 end
