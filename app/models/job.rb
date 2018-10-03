@@ -1,9 +1,10 @@
 class Job < ActiveRecord::Base
-  has_many :cityjobs
+
+  has_many :cityjob
   has_many :cities, through: :cityjobs
 
-  def self.base_url(description = "", location = "")
-    "https://jobs.github.com/positions.json?description=" + description + "&location=" + location
+  def self.base_url(description = "", language="", location = "")
+    "https://jobs.github.com/positions.json?description=" + description + " "+ language + "&location=" + location
   end
 
   def self.format_result(data, i, verbose = false)
@@ -36,16 +37,16 @@ class Job < ActiveRecord::Base
     #add <i> , <br> etc
   end
 
-  def self.most_popular_cities
+  def self.most_popular_cities_from_db
   end
 
-  def self.full_time_roles
+  def self.full_time_roles_from_db
   end
 
-  def self.best_quality_of_life_score
+  def self.best_quality_of_life_score_from_db
   end
 
-  def self.latest_job_posts
+  def self.latest_job_posts_from_db
 
   end
 
