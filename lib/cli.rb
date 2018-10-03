@@ -1,60 +1,36 @@
-#
-# def user_input
-#   "charmander"
+
+# require 'rest-client'
+# require 'json'
+# require 'pry'
+
+
+def greeting
+  puts "Greetings! Welcome to the Pokemon battle grounds. \n To start please enter your name: "
+  input = gets.chomp
+  User.create(name: input)
+  puts "Welcome #{input}"
+end
+
+# def pick_ten_random
+#   puts "please choose a pokemon from a below list"
+#   print Pokemon.name.sample(10)
 # end
-#
-require_all 'app'
-require 'rest-client'
-require 'json'
-require 'pry'
 
+def get_character_from_user
+  count = 0
+  pokemon_options = Pokemon.all.sample(10).map { |p| p.name  }
+  instance = ["first", "second", "third"]
+  puts "Before you can play you must catch your pokemon to build your team. Your Pokemon options are:"
+  pokemon_options.each_with_index { |p, i| puts "#{i + 1}: #{p}"}
+  while count < 3
+    puts "Please select your #{instance[count]} pokemon from the above list."
+    pokemon_choice = gets.chomp.to_i
+        if pokemon_options[pokemon_choice - 1]
+          puts "Thank you #{pokemon_options[pokemon_choice - 1]} has been added to your team"
 
-
-  def get_character_properties_from_api(character)
-    response_string = RestClient.get("http://pokeapi.co/api/v2/pokemon/#{character}")
-    response_hash = JSON.parse(response_string)
-    response_hash
-  end
-
-  # pokemon = get_character_properties_from_api(rand(1..100))
-
-  def get_pokemons_name(pokemon)
-    pokemon["name"]
-  end
-
-  def get_pokemons_health(pokemon)
-    rand(50..100)
-  end
-
-  def get_pokemons_attack(pokemon_health)
-    rand(10..50)
-  end
-
-  def pokemon_array
-    pokemons = []
-
-    until pokemons.length >= 10
-      pokemon = get_character_properties_from_api(rand(1..100))
-      required_data = {
-        name: get_pokemons_name(pokemon),
-        health: get_pokemons_health(pokemon),
-        attack: get_pokemons_attack(get_pokemons_health(pokemon))
-      }
-      pokemons << required_data
+          count += 1
+        else
+          puts "That is an invalid choice, please choose one of the pokemon listed above."
+        end
     end
-
-    pokemons
-  end
-
-
-  # def pokemon_names_array
-  #   pokemon_array.collect {|pokemon| get_pokemons_name(pokemon).capitalize}
-  # end
-
-  def create_pokemon_instances(array_of_pokehashes)
-    array_of_pokehashes.each do |pokehash|
-      Pokemon.create(pokehash)
-    end
-  end
-
-  # create_pokemon_instances(pokemon_array)
+end
