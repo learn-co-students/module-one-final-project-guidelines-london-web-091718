@@ -3,7 +3,7 @@
 require 'rest-client'
 require 'json'
 require "pry"
-
+@@user=""
 
 def exit?(parameter)
   if parameter.downcase=="exit"
@@ -31,12 +31,14 @@ def saving_query(user,language)
   answer = STDIN.gets.chomp
   exit?(answer)
   if answer == "y"
+    @@user=user
     #saves the user to database
     user.save
     "Your profile has been saved."
   elsif answer == "n"
     #tells the user that his data isn't saved
     puts "You are browsing the listings anonymously."
+    @@user="incognito_searcher"
   else
     #if the user is an idiot, ask him again
     puts 'Please answer "y" or "n" '
@@ -205,24 +207,23 @@ end
 
 def store_cityjob_in_database(city,job,city_stats,url="")
   #read this once again ^
-
   hash={}
   ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
   ncm.each do |arr|
     hash[arr[0]]=arr[1]
   end
-  n=
+  binding.pry
 
   c=City.new
   c.name=city
   j=Job.new
   j.title=job
-
   cityjob=CityJob.new
   cityjob.name=("#{city} - #{job}")
   cityjob.city=c
   cityjob.job=j
   cityjob.city.update(hash)
+  cityjob.user=@@user if @@user!=""
   c.save
   j.save
   cityjob.save
