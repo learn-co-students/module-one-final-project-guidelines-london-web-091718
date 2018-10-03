@@ -177,13 +177,6 @@ end
           categories.each do |c|
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
-          #binding.pry
-          # 0
-          # current_cityjob=CityJob.city.find_or_create(name: city_variable)
-          # current_cityjob.update(categories)
-          # current_cityjob.save
-          #
-          #RETURN PERSON BACK TO MENU
           store_cityjob_in_database(chosen_job["location"], chosen_job["title"],formatting_categories(categories))
         end#rescue
       elsif city_more=="n"#if
@@ -210,7 +203,7 @@ end
     cats
   end
 
-def store_cityjob_in_database(city,job,city_stats)
+def store_cityjob_in_database(city,job,city_stats,url="")
   #binding.pry
   hash={}
   ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
@@ -218,11 +211,25 @@ def store_cityjob_in_database(city,job,city_stats)
     hash[arr[0]]=arr[1]
   end
 #  binding.pry
-  cityjob=CityJob.new("#{city}+#{job}")
-  cityjob.city=city
-  cityjob.job=job
-  cityjob.update(hash)
+  n=("#{city} - #{job}")
   binding.pry
+
+  c=City.new
+  c.name=city
+  j=Job.new
+  j.title=job
+
+  cityjob=CityJob.new
+  cityjob.name=n
+  cityjob.city=c
+  cityjob.job=j
+  cityjob.city.update(hash)
+
+  puts "Your search has been added to your search history"
+  puts ""
+  puts ""
+  puts "Returning you to the results list..."
+  puts ""
 end
 
 
