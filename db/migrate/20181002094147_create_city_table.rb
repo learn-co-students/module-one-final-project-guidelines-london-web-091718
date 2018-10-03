@@ -5,25 +5,24 @@ class CreateCityTable < ActiveRecord::Migration[5.0]
       t.string :name
       t.string :urban_area
       t.string :country
-      t.integer :quality_of_life
-      t.integer :housing
-      t.integer :cost_of_living
-      t.integer :startups
-      t.integer :venture_capital
-      t.integer :travel_connectivity
-      t.integer :commute
-      t.integer :business_freedom
-      t.integer :safety
-      t.integer :healthcare
-      t.integer :education
-      t.integer :environmental_quality
-      t.integer :economy
-      t.integer :taxation
-      t.integer :internet_access
-      t.integer :leisure
-      t.integer :tolerance
-      t.integer :outdoors
-      t.string :summary
+      t.string :quality_of_life
+      t.string :Housing
+      t.string :"Cost of Living"
+    t.string   :Startups
+    t.string   :"Venture Capital"
+    t.string   :"Travel Connectivity"
+    t.string   :Commute
+    t.string   :"Business Freedom"
+    t.string    :Safety
+    t.string    :Healthcare
+    t.string    :Education
+    t.string    :"Environmental Quality"
+    t.string    :Economy
+    t.string    :Taxation
+    t.string    :"Internet Access"
+    t.string    :"Leisure & Culture"
+    t.string    :Tolerance
+    t.string    :Outdoors
     end
   end
 end

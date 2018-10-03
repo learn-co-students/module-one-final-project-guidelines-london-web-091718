@@ -167,13 +167,13 @@ end
           puts 'Access denied'
           return err.response
         rescue RestClient::ExceptionWithResponse => err
-          puts 'Sorry, we are unable to find any info on that City at the moment :('
+          puts 'Sorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page.'
           #if it fails to find anything, take the user back to the search screen (run method on line 20 again)
           # show sad_cat.jpg
         else
           puts "Fetching information about #{city_variable}"
           categories =  JSON.parse(resp)["categories"]
-
+        #  binding.pry
           categories.each do |c|
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
@@ -184,6 +184,7 @@ end
           # current_cityjob.save
           #
           #RETURN PERSON BACK TO MENU
+          store_cityjob_in_database(chosen_job["location"], chosen_job["title"],formatting_categories(categories))
         end#rescue
       elsif city_more=="n"#if
         puts "would you like to exit?y/n"
@@ -197,6 +198,33 @@ end
         more_results_with_error_test(chosen_job,job_results_function)
     end#if
   end#def
+
+
+  def formatting_categories(categories)
+    cats=Hash.new(0)
+    categories.each do |c|
+      key=c["name"]
+      value=c["score_out_of_10"]
+      cats[key]=value.to_s.to_i.to_s + " /10"
+    end
+    cats
+  end
+
+def store_cityjob_in_database(city,job,city_stats)
+  #binding.pry
+  hash={}
+  ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
+  ncm.each do |arr|
+    hash[arr[0]]=arr[1]
+  end
+#  binding.pry
+  cityjob=CityJob.new("#{city}+#{job}")
+  cityjob.city=city
+  cityjob.job=job
+  cityjob.update(hash)
+  binding.pry
+end
+
 
 
   # puts Rainbow("\nSymptoms of #{self.name}\n").color("#203259").bright + Rainbow(Format.wrap("\n\n#{self.symptoms[10..-1]}", 70)).color("#191921").gsub('\n  \t\t\n  \t\t', " ")
