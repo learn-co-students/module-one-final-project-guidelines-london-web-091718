@@ -16,7 +16,7 @@ require 'pry'
     response_hash
   end
 
-  pokemon = get_character_properties_from_api(rand(1..100))
+  # pokemon = get_character_properties_from_api(rand(1..100))
 
   def get_pokemons_name(pokemon)
     pokemon["name"]
@@ -57,4 +57,4 @@ require 'pry'
     end
   end
 
-  create_pokemon_instances(pokemon_array)
+  # create_pokemon_instances(pokemon_array)
