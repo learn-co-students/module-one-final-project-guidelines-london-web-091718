@@ -1,9 +1,4 @@
-#
-# def user_input
-#   "charmander"
-# end
-#
-require_all 'app'
+require_all '../lib'
 require 'rest-client'
 require 'json'
 require 'pry'
@@ -27,7 +22,7 @@ require 'pry'
   end
 
   def get_pokemons_attack(pokemon_health)
-    rand(10..50)
+    rand(50..100)
   end
 
   def pokemon_array
