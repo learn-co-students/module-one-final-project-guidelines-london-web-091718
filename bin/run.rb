@@ -1,7 +1,5 @@
 require_relative '../config/environment'
 
-
-greeting
-get_character_from_user
+get_character_from_user(greeting, comp)
 
 puts "EOF"
