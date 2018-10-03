@@ -6,10 +6,11 @@ require "pry"
 
 
 def exit?(parameter)
-  if parameter=="exit"
+  if parameter.downcase=="exit"
     puts "Goodbye! Thank you for visiting our tech jobsearch."
     exit(0)
   end
+  return parameter
 end
 
 
@@ -17,6 +18,7 @@ def get_fav_language(user_instance)
   #gets the fav language from user if user logs into CLI for first time
   puts "Please tell us your main programming language:"
   favourite_language = STDIN.gets.chomp
+  exit?(favourite_language)
   user_instance.fav_language = favourite_language
   return favourite_language
   #returns the users favorite language to use in other methods
@@ -27,6 +29,7 @@ def saving_query(user,language)
   #asks if the user would like to save his info
   puts "Would you like to save the information? (y/n)"
   answer = STDIN.gets.chomp
+  exit?(answer)
   if answer == "y"
     #saves the user to database
     user.save
@@ -53,6 +56,7 @@ def welcome_user
   #returns user
   puts "Welcome to our tech jobsearch! Please enter your name:"
   username = STDIN.gets.chomp
+  exit?(username)
   user_search = User.all.find_or_create_by(name: username)
   #looks the user up in the DB by name
   puts "Welcome, #{username}."
@@ -69,19 +73,18 @@ def search_query(user)
 
 
   puts Rainbow("Please enter the city:").green
-  puts "Press enter to search by language instead. Enter 'exit' to exit"
+  puts "Press enter to search by language instead. You can enter 'exit' to exit anytime."
   city = STDIN.gets.chomp
+  exit?(city)
   search_parameter[:city]=city
 
   exit?(city)
   puts Rainbow("Please enter your preffered programming language:").green
-  puts "Press enter to search by keyword instead. Enter 'exit' to exit"
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
 
   exit?(lang)
   puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
-  puts "Press enter if you have finished. Enter 'exit' to exit"
   keywords = STDIN.gets.chomp
   search_parameter[:keywords]=keywords
 
@@ -97,6 +100,7 @@ end
   def would_you_like_to_save(user,data_hash)
     puts "Would you like to save these details for future searches? [Y]es or [N]o"
     ans=STDIN.gets.chomp.downcase
+    exit?(ans)
       if ans == "y"
         user.update(data_hash)
       elsif ans == "n"
@@ -152,6 +156,7 @@ end
     #list of results needs to be passed ^ so we can return to main menu
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
+    exit?(city_more)
     if city_more=="y"
       puts "Loading city information..."
       city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
@@ -173,18 +178,17 @@ end
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
           #binding.pry
-          0
-          current_cityjob=CityJob.city.find_or_create(name: city_variable)
-          current_cityjob.update(categories)
-          current_cityjob.save
-          puts "The city and its stats have been added to the database. More functionality unlocked."
-
-          puts "Please use the website to apply for the job if you are interested. Search again if you wishsee other listings."
+          # 0
+          # current_cityjob=CityJob.city.find_or_create(name: city_variable)
+          # current_cityjob.update(categories)
+          # current_cityjob.save
+          #
           #RETURN PERSON BACK TO MENU
         end#rescue
       elsif city_more=="n"#if
         puts "would you like to exit?y/n"
         ans=gets.chomp
+        exit?(ans)
         if ans=="y"
           exit(0)
         end
