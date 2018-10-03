@@ -1,9 +1,9 @@
-require_all '../lib'
+require_all 'lib'
 require 'rest-client'
 require 'json'
 require 'pry'
 
-
+# Pokemon.destroy_all
 
   def get_character_properties_from_api(character)
     response_string = RestClient.get("http://pokeapi.co/api/v2/pokemon/#{character}")
@@ -18,18 +18,18 @@ require 'pry'
   end
 
   def get_pokemons_health(pokemon)
-    rand(50..100)
+    rand(70..100)
   end
 
   def get_pokemons_attack(pokemon_health)
-    rand(50..100)
+    rand(10..30)
   end
 
   def pokemon_array
     pokemons = []
 
-    until pokemons.length >= 10
-      pokemon = get_character_properties_from_api(rand(1..100))
+    until pokemons.length >= 150
+      pokemon = get_character_properties_from_api(pokemons.length + 1)
       required_data = {
         name: get_pokemons_name(pokemon),
         health: get_pokemons_health(pokemon),
@@ -42,9 +42,9 @@ require 'pry'
   end
 
 
-  def pokemon_names_array
-    pokemon_array.collect {|pokemon| get_pokemons_name(pokemon).capitalize}
-  end
+  # def pokemon_names_array
+  #   pokemon_array.collect {|pokemon| get_pokemons_name(pokemon).capitalize}
+  # end
 
   def create_pokemon_instances(array_of_pokehashes)
     array_of_pokehashes.each do |pokehash|
@@ -52,4 +52,4 @@ require 'pry'
     end
   end
 
-  create_pokemon_instances(pokemon_array)
+  # create_pokemon_instances(pokemon_array)
