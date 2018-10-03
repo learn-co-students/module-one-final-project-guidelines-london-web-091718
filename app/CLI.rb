@@ -74,7 +74,7 @@ def search_query(user)
   search_parameter[:city]=city
 
   exit?(city)
-  puts Rainbow("Please enter your favourite programming language:").green
+  puts Rainbow("Please enter your preffered programming language:").green
   puts "Press enter to search by keyword instead. Enter 'exit' to exit"
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
@@ -125,26 +125,31 @@ end
       i+=1
       list_of_results << result
     end
+    list_of_results
   end
 
   def chosen_job(list_of_results)
-    chosen_job_num = 800
-    while chosen_job_num != 'q' && (chosen_job_num.is_a? Integer)
-      puts "Select a number from the above list to view further job details"
-      #check if the user selected the correct listing
-      chosen_job_num = gets.chomp
-      chosen_job = list_of_results[chosen_job_num.to_i - 1]
-      puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
-      puts ""
-      #offer the user to open the listing in his browser using the :url
+    # FORCE IT TO_INTEGERT
+    puts "Select a number from the above list to view further job details"
+    chosen_job_num = gets
+    if (chosen_job_num.to_i.is_a? Integer)==false
+      puts "Please select a valid listing!"
+      chosen_job(list_of_results)
+    elsif chosen_job_num.to_i>list_of_results.length
+      puts "Please select a valid listing!"
+      chosen_job(list_of_results)
+    else
+        #check if the user selected the correct listing
+        chosen_job = list_of_results[chosen_job_num.to_i - 1]
+        puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
+        puts ""
+      end
       return chosen_job
     end
-  end
 
 
-  # =========================================================
-
-  def more_results_with_error_test(chosen_job)
+  def more_results_with_error_test(chosen_job,job_results_function)
+    #list of results needs to be passed ^ so we can return to main menu
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
     if city_more=="y"
@@ -167,7 +172,7 @@ end
           categories.each do |c|
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
-          binding.pry
+          #binding.pry
           0
           current_cityjob=CityJob.city.find_or_create(name: city_variable)
           current_cityjob.update(categories)
@@ -178,7 +183,14 @@ end
           #RETURN PERSON BACK TO MENU
         end#rescue
       elsif city_more=="n"#if
-
+        puts "would you like to exit?y/n"
+        ans=gets.chomp
+        if ans=="y"
+          exit(0)
+        end
+      else
+        puts "please provide a valid command"
+        more_results_with_error_test(chosen_job,job_results_function)
     end#if
   end#def
 
