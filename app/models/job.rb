@@ -1,4 +1,5 @@
 class Job < ActiveRecord::Base
+  
   has_many :cityjobs
   has_many :cities, through: :cityjobs
 
