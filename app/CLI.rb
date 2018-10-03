@@ -109,7 +109,7 @@ end
 
   def job_search_results(job_query)
     puts "Loading Jobs..."
-    url = Job.base_url("#{job_query[:keywords]}#{job_query[:language]},#{job_query[:city]}")
+    url = Job.base_url(job_query[:keywords],job_query[:language],job_query[:city])
     response = RestClient.get(url)
     puts url
     JSON.parse(response)
@@ -148,7 +148,7 @@ end
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
     if city_more=="y"
-      puts 'Loading your city information...'
+      puts "Loading city information..."
       city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
       # binding.pry
         begin
@@ -163,13 +163,22 @@ end
         else
           puts "Fetching information about #{city_variable}"
           categories =  JSON.parse(resp)["categories"]
+
           categories.each do |c|
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
+          binding.pry
+          0
+          current_cityjob=CityJob.city.find_or_create(name: city_variable)
+          current_cityjob.update(categories)
+          current_cityjob.save
+          puts "The city and its stats have been added to the database. More functionality unlocked."
+
+          puts "Please use the website to apply for the job if you are interested. Search again if you wishsee other listings."
           #RETURN PERSON BACK TO MENU
         end#rescue
       elsif city_more=="n"#if
-        puts "Please use the website to apply for the job if you are interested. Search again if you wish to see other listings."
+
     end#if
   end#def
 
