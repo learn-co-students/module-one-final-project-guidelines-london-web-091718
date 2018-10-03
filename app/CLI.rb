@@ -3,7 +3,7 @@
 require 'rest-client'
 require 'json'
 require "pry"
-
+@@user=""
 
 def exit?(parameter)
   if parameter.downcase=="exit"
@@ -31,6 +31,7 @@ def saving_query(user,language)
   answer = STDIN.gets.chomp
   exit?(answer)
   if answer == "y"
+    @@user=user
     #saves the user to database
     user.save
     "Your profile has been saved."
@@ -160,16 +161,16 @@ end
       puts "Loading city information..."
       city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
       # binding.pry
-        begin
-          resp = RestClient.get("https://api.teleport.org/api/urban_areas/slug:#{city_variable}/scores/")
-        rescue RestClient::Unauthorized, RestClient::Forbidden => err
-          puts 'Access denied'
-          return err.response
-        rescue RestClient::ExceptionWithResponse => err
-          puts 'Sorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page.'
-          #if it fails to find anything, take the user back to the search screen (run method on line 20 again)
-          # show sad_cat.jpg
-        else
+      begin
+        resp =RestClient.get("https://api.teleport.org/api/urban_areas/slug:#{ity_variable}/scores/")
+      rescue RestClient::Unauthorized, RestClient::Forbidden => err
+        puts 'Access denied'
+        return err.response
+      rescue RestClient::ExceptionWithResponse => err
+        puts 'Sorry, we are unable to find any info on that City at themoment :(. We will return you back to the results page.'
+        #if it fails to find anything, take the user back to the searchscreen (run method on line 20 again)
+        # show sad_cat.jpg
+      else
           puts "Fetching information about #{city_variable}"
           categories =  JSON.parse(resp)["categories"]
         #  binding.pry
@@ -177,17 +178,11 @@ end
             puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
           end#each
           store_cityjob_in_database(chosen_job["location"], chosen_job["title"],formatting_categories(categories))
-        end#rescue
+      end#rescue
       elsif city_more=="n"#if
-        puts "would you like to exit?y/n"
-        ans=gets.chomp
-        exit?(ans)
-        if ans=="y"
-          exit(0)
-        end
-      else
-        puts "please provide a valid command"
-        more_results_with_error_test(chosen_job,job_results_function)
+    else
+      puts "please provide a valid command"
+      more_results_with_error_test(chosen_job,job_results_function)
     end#if
   end#def
 
@@ -205,24 +200,23 @@ end
 
 def store_cityjob_in_database(city,job,city_stats,url="")
   #read this once again ^
-
   hash={}
   ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
   ncm.each do |arr|
     hash[arr[0]]=arr[1]
   end
-  n=
+  #binding.pry
 
   c=City.new
   c.name=city
   j=Job.new
   j.title=job
-
   cityjob=CityJob.new
   cityjob.name=("#{city} - #{job}")
   cityjob.city=c
   cityjob.job=j
   cityjob.city.update(hash)
+  cityjob.user=@@user if @@user!=""
   c.save
   j.save
   cityjob.save
