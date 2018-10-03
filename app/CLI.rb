@@ -143,10 +143,9 @@ end
       puts "Please select a valid listing!"
       chosen_job(list_of_results)
     else
-        #check if the user selected the correct listing
-        chosen_job = list_of_results[chosen_job_num.to_i - 1]
-        puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
-        puts ""
+      chosen_job = list_of_results[chosen_job_num.to_i - 1]
+      puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
+      puts ""
       end
       return chosen_job
     end
@@ -194,6 +193,7 @@ end
 
 
   def formatting_categories(categories)
+    #used to format categories into an acceptable hash format to direectly update the Class cityjobs
     cats=Hash.new(0)
     categories.each do |c|
       key=c["name"]
@@ -204,15 +204,14 @@ end
   end
 
 def store_cityjob_in_database(city,job,city_stats,url="")
-  #binding.pry
+  #read this once again ^
+
   hash={}
   ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
   ncm.each do |arr|
     hash[arr[0]]=arr[1]
   end
-#  binding.pry
-  n=("#{city} - #{job}")
-  binding.pry
+  n=
 
   c=City.new
   c.name=city
@@ -220,10 +219,13 @@ def store_cityjob_in_database(city,job,city_stats,url="")
   j.title=job
 
   cityjob=CityJob.new
-  cityjob.name=n
+  cityjob.name=("#{city} - #{job}")
   cityjob.city=c
   cityjob.job=j
   cityjob.city.update(hash)
+  c.save
+  j.save
+  cityjob.save
 
   puts "Your search has been added to your search history"
   puts ""
@@ -231,23 +233,3 @@ def store_cityjob_in_database(city,job,city_stats,url="")
   puts "Returning you to the results list..."
   puts ""
 end
-
-
-
-  # puts Rainbow("\nSymptoms of #{self.name}\n").color("#203259").bright + Rainbow(Format.wrap("\n\n#{self.symptoms[10..-1]}", 70)).color("#191921").gsub('\n  \t\t\n  \t\t', " ")
-
-
-
-
-########################
-####CALLING FUNCTIONS###
-
-
-
-#######################
-#######################
-
-
-# url = 'https://api.spotify.com/v1/search?type=artist&q=tycho'
-# response = RestClient.get(url)
-# JSON.parse(response)
