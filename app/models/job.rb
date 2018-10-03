@@ -3,7 +3,7 @@ class Job < ActiveRecord::Base
   has_many :cities, through: :cityjobs
 
   def self.base_url(description = "", location = "")
-    "https://jobs.github.com/positions.json?description=" + description + "&location=" + description
+    "https://jobs.github.com/positions.json?description=" + description + "&location=" + location
   end
 
   def self.format_result(data, i, verbose = false)
