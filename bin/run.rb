@@ -20,11 +20,13 @@ find_user_and_comp_pokemon
 #
 player_pokemons = player_pokemon_instances
 comp_pokemons = comp_pokemon_instances
-
+# dice_roll
 fight(player_pokemons[0], comp_pokemons[0])
+press_enter_to_continue
 fight(player_pokemons[1], comp_pokemons[1])
+press_enter_to_continue
 fight(player_pokemons[2], comp_pokemons[2])
-
+press_enter_to_continue
 winner(player_pokemons, comp_pokemons)
 
 

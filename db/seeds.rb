@@ -21,7 +21,7 @@ require 'pry'
   end
 
   def get_pokemons_attack(pokemon_health)
-    rand(10..30)
+    rand(30..45)
   end
 
   def pokemon_array

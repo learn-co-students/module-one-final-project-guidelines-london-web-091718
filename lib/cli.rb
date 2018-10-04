@@ -7,6 +7,7 @@ require 'rest-client'
 require 'json'
 require 'pry'
 require 'terminal-table'
+require 'rainbow'
 
 def get_user_name
   username = ''
@@ -32,7 +33,7 @@ def greeting
 
   username = get_user_name
   @user = User.create(name: username)
-  puts "Greetings #{username.capitalize}"
+  puts "\nGreetings #{username.capitalize}"
   @user
 end
 #
@@ -49,16 +50,17 @@ def get_character_from_user(user, comp)
   count = 0
   pokemon_options = Pokemon.all.sample(10).map { |p| p.name  }
   instance = ["first", "second", "third"]
-  puts "Before you can play you must catch your pokemon to build your team. Your Pokemon options are:"
+  puts "\nBefore you can play you must catch your Pokemon to build your team. \nYour Pokemon options are:"
   pokemon_options.each_with_index { |p, i| puts "#{i + 1}: #{p.capitalize}"}
+  puts "Please note that you cannot choose the same Pokemon twice"
   while count < 3
-    puts "Catch your #{instance[count]} pokemon from the above list by entering their corresponding number. \n Please note that you cannot choose the same Pokemon twice"
+    puts "\nCatch your #{instance[count]} Pokemon from the above list by entering their corresponding number. \n"
     pokemon_choice = gets.chomp
     chosen_pokemon = Pokemon.find_by(name: pokemon_options[pokemon_choice.to_i - 1])
     UserPokemon.create(user: user, pokemon: chosen_pokemon)
     # pokemon_options.delete(pokemon_options[pokemon_choice.to_i - 1])
         if pokemon_options.include?(pokemon_options[pokemon_choice.to_i - 1]) && pokemon_options[pokemon_choice.to_i - 1]
-          puts "Thank you #{pokemon_options[pokemon_choice.to_i - 1]} has been added to your team"
+          puts "#{pokemon_options[pokemon_choice.to_i - 1].capitalize} has been added to your team\n"
           count += 1
           pokemon_options[pokemon_choice.to_i - 1] = nil
         else
@@ -104,6 +106,11 @@ end
 
 ############################
 
+  def press_enter_to_continue
+    puts "\nPress enter to continue"
+    gets.chomp
+  end
+
   def player_pokemon_instances
   UserPokemon.all.select { |userpokemon| userpokemon.user_id == @user.id }
   end
@@ -112,6 +119,28 @@ end
     UserPokemon.all.select { |userpokemon| userpokemon.user_id == @comp.id }
   end
 
+  # def dice_roll
+  #   user_dice = rand(4..6)
+  #   comp_dice = rand(1..3)
+  #     puts "Dice roll time!"
+  #     sleep(0.5)
+  #     puts "\nYou have rolled #{user_dice}!"
+  #     puts "\nThe Computer has rolled #{comp_dice}!"
+  #     puts "\nCONGRATS!!!!! YOU GO FIRST!"
+  #     puts "Press enter to start"
+  #     gets.chomp
+  # end
+
+  # def fight(player_pokemons, comp_pokemons)
+  #   count = 0
+  #   while count < 3
+  #     binding.pry
+  #   fight(player_pokemons[count], comp_pokemons[count])
+  #   puts "Press enter to run to continue"
+  #   gets.chomp
+  #   count += 1
+  #  end
+  # end
 
 def round(player_pokemon, comp_pokemon, dice)
   if dice == 1
@@ -130,6 +159,10 @@ def stats(player_pokemon, comp_pokemon)
 
   puts "\nComputer Pokemon Stats:"
   puts "  Name: #{comp_pokemon.pokemon.name.capitalize}\n  Health: #{comp_pokemon.pokemon.health}\n  Attack: #{comp_pokemon.pokemon.attack}  \n"
+
+    # puts "Your Pokemon #{player_pokemon.pokemon.name.capitalize}'s health is now #{player_pokemon.pokemon.health}"
+    #
+    # puts "The Computer's Pokemon #{comp_pokemon.pokemon.name.capitalize}'s health is now #{comp_pokemon.pokemon.health}"
 end
 
 def fight(player_pokemon, comp_pokemon)
@@ -141,11 +174,11 @@ def fight(player_pokemon, comp_pokemon)
   dice = rand(1..2)
   round = 1
 
-  sleep (2)
+  sleep (1.5)
 
 
   while (comp_pokemon.pokemon.health >= 0 && player_pokemon.pokemon.health >= 0)
-    puts "\n***** ROUND #{round} *****"
+    puts Rainbow("\n***** ROUND #{round} *****").red
     round(player_pokemon, comp_pokemon, dice)
     stats(player_pokemon, comp_pokemon)
     if dice == 1
@@ -154,19 +187,21 @@ def fight(player_pokemon, comp_pokemon)
     end
     round += 1
     puts ""
-    sleep (0.5)
+    sleep (1)
   end
 
   if player_pokemon.pokemon.health.to_i <= 0
-    puts "Your Pokemon #{player_pokemon.pokemon.name.capitalize} has been defeated"
-    puts "FIGHT FINSIH \n"
+    puts "FIGHT FINISHED"
+    puts "\nYour Pokemon #{player_pokemon.pokemon.name.capitalize} has been defeated"
+
 
     comp_pokemon.won += 1
     comp_pokemon.save
 
   elsif comp_pokemon[:health].to_i <= 0
-    puts "The Computer's Pokemon #{comp_pokemon.pokemon.name.capitalize} has been defeated"
-    puts "FIGHT FINSIH \n"
+    puts "FIGHT FINISHED"
+    puts "\nThe Computer's Pokemon #{comp_pokemon.pokemon.name.capitalize} has been defeated"
+
 
     player_pokemon.won += 1
     player_pokemon.save
@@ -198,10 +233,11 @@ puts
      # puts "this player's id number is: #{player_pokemons.first.user_id}"
      @user = User.all.find { |user| user.id == player_pokemons.first.user_id}
      # puts "this user is #{@user}"
-     puts "Congrats, #{@user.name}!"
+     puts "Congrats, #{@user.name}!\n"
      puts winner
      # puts "Congrats #{User.find_by(id: 2).name}! You've won!"
-   else puts "Congrats #{User.find_by(id: 2).name}! You've won!"
+   else
+     puts loser
 
    end
 end
