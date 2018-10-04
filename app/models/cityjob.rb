@@ -21,7 +21,9 @@ belongs_to :user
   end
 
   def self.latest_job_posts_from_db
-    Job.order("created_at").last
+    Job.last
   end
-  
+
+
+
 end
