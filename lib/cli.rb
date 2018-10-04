@@ -74,9 +74,43 @@ def get_character_from_user(user, comp)
     end
 end
 
+def find_user_and_comp_pokemon
+  my_user_pokemon = UserPokemon.all.select { |userpokemon| userpokemon.user_id == @user.id }
+  my_pokemon_name = my_user_pokemon.map { |up| up.pokemon.name.capitalize }
+  my_pokemon_health = my_user_pokemon.map { |up| up.pokemon.health}
+  my_pokemon_attack = my_user_pokemon.map { |up| up.pokemon.attack}
+
+  comp_user_pokemon = UserPokemon.all.select { |userpokemon| userpokemon.user_id == @comp.id }
+  comp_pokemon_name = comp_user_pokemon.map { |up| up.pokemon.name.capitalize }
+  comp_pokemon_health = comp_user_pokemon.map { |up| up.pokemon.health}
+  comp_pokemon_attack = comp_user_pokemon.map { |up| up.pokemon.attack}
+  user_table = Terminal::Table.new do |v|
+    v.title = "Let's battle!"
+    v.add_row  ["Your Pokemon Team", "The Computer's Pokemon Team"]
+    v.style = {:width => 80}
+  end
+  bottom = Terminal::Table.new do |v|
+    v.add_row ['Pokemon', 'Health', 'Attack', 'Pokemon', 'Health', 'Attack']
+    v.add_separator
+    v.add_row [my_pokemon_name[0], my_pokemon_health[0], my_pokemon_attack[0], comp_pokemon_name[0], comp_pokemon_health[0], comp_pokemon_attack[0]]
+    v.add_row [my_pokemon_name[1], my_pokemon_health[1], my_pokemon_attack[1], comp_pokemon_name[1], comp_pokemon_health[1], comp_pokemon_attack[1]]
+    v.add_row [my_pokemon_name[2], my_pokemon_health[2], my_pokemon_attack[2], comp_pokemon_name[2], comp_pokemon_health[2], comp_pokemon_attack[2]]
+    v.style = { :border_top => false,:width => 80}
+  end
+  puts user_table
+  puts bottom
+end
+
 
 ############################
 
+  def player_pokemon_instances
+  UserPokemon.all.select { |userpokemon| userpokemon.user_id == @user.id }
+  end
+
+  def comp_pokemon_instances
+    UserPokemon.all.select { |userpokemon| userpokemon.user_id == @comp.id }
+  end
 
 
 def round(player_pokemon, comp_pokemon, dice)
@@ -142,50 +176,6 @@ end
 
 def winner(player_pokemons, comp_pokemons)
 
-   if player_pokemons.map {|w| w.won}.sum > comp_pokemons.map {|w| w.won}.sum
-     # puts "this player's id number is: #{player_pokemons.first.user_id}"
-     @user = User.all.find { |user| user.id == player_pokemons.first.user_id}
-     # puts "this user is #{@user}"
-     puts "Congrats, #{@user.name}! You won!"
-     # puts "Congrats #{User.find_by(id: 2).name}! You've won!"
-   else
-     puts "Aw shucks! You lost!"
-   end
-end
-
-
-
-# print 'eof'
-
-
-def find_user_and_comp_pokemon
-  my_user_pokemon = UserPokemon.all.select { |userpokemon| userpokemon.user_id == @user.id }
-  my_pokemon_name = my_user_pokemon.map { |up| up.pokemon.name.capitalize }
-  my_pokemon_health = my_user_pokemon.map { |up| up.pokemon.health}
-  my_pokemon_attack = my_user_pokemon.map { |up| up.pokemon.attack}
-
-  comp_user_pokemon = UserPokemon.all.select { |userpokemon| userpokemon.user_id == @comp.id }
-  comp_pokemon_name = comp_user_pokemon.map { |up| up.pokemon.name.capitalize }
-  comp_pokemon_health = comp_user_pokemon.map { |up| up.pokemon.health}
-  comp_pokemon_attack = comp_user_pokemon.map { |up| up.pokemon.attack}
-  user_table = Terminal::Table.new do |v|
-    v.title = "Let's battle!"
-    v.add_row  ["Your Pokemon Team", "The Computer's Pokemon Team"]
-    v.style = {:width => 80}
-  end
-  bottom = Terminal::Table.new do |v|
-    v.add_row ['Pokemon', 'Health', 'Attack', 'Pokemon', 'Health', 'Attack']
-    v.add_separator
-    v.add_row [my_pokemon_name[0], my_pokemon_health[0], my_pokemon_attack[0], comp_pokemon_name[0], comp_pokemon_health[0], comp_pokemon_attack[0]]
-    v.add_row [my_pokemon_name[1], my_pokemon_health[1], my_pokemon_attack[1], comp_pokemon_name[1], comp_pokemon_health[1], comp_pokemon_attack[1]]
-    v.add_row [my_pokemon_name[2], my_pokemon_health[2], my_pokemon_attack[2], comp_pokemon_name[2], comp_pokemon_health[2], comp_pokemon_attack[2]]
-    v.style = { :border_top => false,:width => 80}
-  end
-  puts user_table
-  puts bottom
-end
-
-def winner_or_loser
   winner = "  dP    dP                      dP   dP   dP oo
   Y8.  .8P                      88   88   88
    Y8aa8P  .d8888b. dP    dP    88  .8P  .8P dP 88d888b.
@@ -203,8 +193,29 @@ Y8.  .8P                      88
    dP    `88888P' `88888P'    dP `88888P' `88888P' `88888P'
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
                                                             "
-  puts winner
-  puts loser
+puts
+   if player_pokemons.map {|w| w.won}.sum > comp_pokemons.map {|w| w.won}.sum
+     # puts "this player's id number is: #{player_pokemons.first.user_id}"
+     @user = User.all.find { |user| user.id == player_pokemons.first.user_id}
+     # puts "this user is #{@user}"
+     puts "Congrats, #{@user.name}!"
+     puts winner
+     # puts "Congrats #{User.find_by(id: 2).name}! You've won!"
+   else puts "Congrats #{User.find_by(id: 2).name}! You've won!"
+
+   end
+end
+
+
+
+# print 'eof'
+
+
+
+
+ #def winner_or_loser
+
+#   puts loser
   #   winner = Terminal::Table.new do |v|
   #     table.style = {:width => 40, :padding_left => 3, :border_x => "=", :border_i => "x"}
   #     v.title = "You Win!"
@@ -221,7 +232,7 @@ oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
   #   #   puts "you win"
   #   # end
   #
-end
+ #end
 
 # def delete_user_table
 #   User.destroy_all
@@ -229,5 +240,7 @@ end
 #
 #
 # def delete_userpokemon_table
+#   UserPoke.destroy_all
+# end
 #   UserPoke.destroy_all
 # end

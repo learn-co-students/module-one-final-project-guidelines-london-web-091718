@@ -4,7 +4,7 @@ def get_user_name
   username = ''
   is_invalid = true
   while is_invalid do
-    p 'whats your name'
+    p 'Enter your name:'
     username = gets.chomp
 
     if username.to_i != 0 || username == '0'
@@ -19,5 +19,3 @@ def get_user_name
 end
 
 # binding.pry
-
-p 'fsd'
