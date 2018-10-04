@@ -16,9 +16,10 @@ end
 
 def welcome_user
   #returns user
-  puts "Welcome to our tech jobsearch! Please enter your name:"
+  puts Rainbow("Welcome to our tech jobsearch! Please enter your name:").green
   username = STDIN.gets.chomp
   exit?(username)
+  @user=username
   user_search = User.all.find_or_create_by(name: username)
   #looks the user up in the DB by name
   puts "Welcome, #{username}."
@@ -108,14 +109,18 @@ def chosen_job(list_of_results)
   return chosen_job
 end
 
-
 def more_results_with_error_test(chosen_job,job_results_function)
   #job_results_function needs to be passed ^ so we can return to main menu
   puts "Would you like to see more info about the city?"
   city_more=gets.chomp
+  history?(city_more,@user)
   exit?(city_more)
+  if chosen_job['location'].downcase=="remote"
+    "Sorry, this city does not exist. Please restart the CLI."
+  end
   if city_more == "n"
-      #do nothing
+    puts "Thanks for using the CLI :)"
+    exit(0)
   elsif city_more=="y"
     #loads city info and stores in city db
     puts "Loading city information..."
@@ -182,8 +187,17 @@ def store_cityjob_in_database(city,job,city_stats,user="")
 end
 
 def history?(argument,user)
+  new_command=argument
   if argument.downcase=="history"
-    puts CityJob.all.find_by(user: user)
+    puts "Here's the user search history:"
+    located_cityjob=CityJob.all.find_by(user: user)
+    if located_cityjob
+      puts "User: " + located_cityjob.user.name
+      puts "Job: " + located_cityjob.job.title
+      puts "Location: "+located_cityjob.city.name
+    end
+    puts "How would you like to continue?"
+    new_command=gets.chomp
   end
-  argument
+  new_command
 end

@@ -1,13 +1,8 @@
 require_relative '../config/environment'
 
-def history?(argument,user)
-  if argument=="history"
-    puts CityJob.all.find_by(user_id: user.id)
-  end
-  argument
-end
 
 user=welcome_user
+@user=user
 job_query=search_query(user)
 loop do
   job_results=job_search_results(job_query)
