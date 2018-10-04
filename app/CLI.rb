@@ -18,46 +18,19 @@ def get_fav_language(user_instance)
   puts "Please tell us your main programming language:"
   favourite_language = STDIN.gets.chomp
   exit?(favourite_language)
+  history?(favourite_language,user_instance)
   user_instance.fav_language = favourite_language
   return favourite_language
   #returns the users favorite language to use in other methods
 end
 
-def saving_query(user,language)
-  #CURRENTLY UNUSED
-  #asks if the user would like to save his info
-  puts
-  prompt = TTY::Prompt.new
-  prompt.yes?("Would you like to save the information?")
-  exit?(answer)
-  if answer == "y"
-    @@user=user
-    #saves the user to database
-    user.save
-    "Your profile has been saved."
-  elsif answer == "n"
-    #tells the user that his data isn't saved
-    puts "You are browsing the listings anonymously."
-  else
-    #if the user is an idiot, ask him again
-    puts 'Please answer "y" or "n" '
-    saving_query(user,language)
-  end
-  user
-end
-
-def make_query_empty?(query)
-  #CURRENTLY UNUSED
-  if query == 0
-    query = nil
-  end
-end
 
 def welcome_user
   #returns user
   puts "Welcome to our tech jobsearch! Please enter your name:"
   username = STDIN.gets.chomp
   exit?(username)
+  history?(username,username)
   user_search = User.all.find_or_create_by(name: username)
   #looks the user up in the DB by name
   puts "Welcome, #{username}."
@@ -70,8 +43,6 @@ def search_query(user)
   lang = ''
   keywords = ''
   search_parameter=Hash.new(0)
-
-
   puts Rainbow("Please enter the city:").green
   puts "Press enter to search by language instead. You can enter 'exit' to exit anytime."
   city = STDIN.gets.chomp
@@ -82,7 +53,6 @@ def search_query(user)
   puts Rainbow("Please enter your preferred programming language:").green
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
-
   exit?(lang)
   history?(lang,user)
   puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
@@ -97,17 +67,19 @@ end
 
 
   #method for requesting user to save data to db:
-  def would_you_like_to_save(user,data_hash)
-    puts "Would you like to save these details for future searches? [Y]es or [N]o"
-    ans=STDIN.gets.chomp.downcase
-    exit?(ans)
-      if ans == "y"
-        user.update(data_hash)
-      elsif ans == "n"
-      else
-        puts "Please choose y or n"
-        would_you_like_to_save(user,data_hash)
-      end
+def would_you_like_to_save(user,data_hash)
+  puts "Would you like to save these details for future searches? [Y]es or [N]o?"
+  #yes/no TTY is shit and does not rescue in case of error
+  ans=STDIN.gets.chomp.downcase
+    history?(ans,user)
+  exit?(ans)
+    if ans == "y"
+      user.update(data_hash)
+    elsif ans == "n"
+    else
+      puts "Please choose y or n"
+      would_you_like_to_save(user,data_hash)
+    end
   end
 
 
@@ -117,8 +89,6 @@ end
     response = RestClient.get(url)
     puts url
     JSON.parse(response)
-    #binding.pry
-  #  binding.pry
   end
 
   def result_list(job_search_results)
@@ -132,27 +102,18 @@ end
     list_of_results
   end
 
-  def chosen_job(list_of_results)
-    # FORCE IT TO_INTEGERT
-    #take care of this (if finds 0 results or if user inputs fdsfdsfsd )
-    q=""
+def chosen_job(list_of_results)
   if list_of_results.length>0
     prompt = TTY::Prompt.new
     prompty=prompt.multi_select("Select a listing", list_of_results.map {|m| m["title"]})
     chosen_job=list_of_results.find{|hash| hash["title"]==prompty[0]}
-else
+  else
     puts "no results found. Please try to search again."
     exit(0)
   end
-#binding.pry
-    #puts "Select a number from the above list to view further job details"
-      puts Job.format_result(chosen_job, "", true)
-      return chosen_job
-    
-    #   puts ""
-    # end
-
-  end
+    puts Job.format_result(chosen_job, "", true)
+    return chosen_job
+end
 
 
   def more_results_with_error_test(chosen_job,job_results_function)
@@ -160,6 +121,7 @@ else
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
     exit?(city_more)
+    history?(argument,user)
     if city_more == "n"
     elsif city_more=="y"
       puts "Loading city information..."
@@ -172,7 +134,6 @@ else
         return err.response
       rescue RestClient::ExceptionWithResponse => err
         puts 'Sorry, we are unable to find any info on that City at themoment :(. We will return you back to the results page.'
-        #if it fails to find anything, take the user back to the searchscreen (run method on line 20 again)
         # show sad_cat.jpg
       else
           puts "Fetching information about #{city_variable}"
@@ -208,10 +169,7 @@ def store_cityjob_in_database(city,job,city_stats,url="")
   ncm.each do |arr|
     hash[arr[0]]=arr[1]
   end
-  #binding.pry
-
-  c=City.new
-  c.name=city
+  c=City.find_or_create_by(name: city)
   j=Job.new
   j.title=job
   cityjob=CityJob.new
@@ -232,8 +190,8 @@ def store_cityjob_in_database(city,job,city_stats,url="")
 end
 
 def history?(argument,user)
-#  binding.pry
   if argument=="history"
     puts user
   end
+  argument
 end
