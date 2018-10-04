@@ -4,6 +4,12 @@ def load_city_hash
   JSON.parse(response_string)
 end
 
+def load_github_job_hash
+  puts 'Loading your results...'
+  response_string = RestClient.get('https://jobs.github.com/positions.json?description=')
+  JSON.parse(response_string)
+end
+
 #https://api.teleport.org/api/cities/?search=#{city.name}
 
 def load_job_hash
