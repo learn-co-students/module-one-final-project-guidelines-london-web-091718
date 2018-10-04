@@ -51,59 +51,33 @@ def get_character_from_user(user, comp)
     end
 end
 
-def find_users_pokemon
+
+def find_user_and_comp_pokemon
   my_user_pokemon = UserPokemon.all.select { |userpokemon| userpokemon.user_id == @user.id }
   my_pokemon_name = my_user_pokemon.map { |up| up.pokemon.name.capitalize }
   my_pokemon_health = my_user_pokemon.map { |up| up.pokemon.health}
   my_pokemon_attack = my_user_pokemon.map { |up| up.pokemon.attack}
-  # puts "your pokemon are: #{my_pokemon_name}"
-  user_table = Terminal::Table.new do |v|
-    v.title = "Your Pokemon Team"
-    v.headings = 'Pokemon', 'Health', 'Attack'
-    v.add_row [my_pokemon_name[0], my_pokemon_health[0], my_pokemon_attack[0]]
-    v.add_row [my_pokemon_name[1], my_pokemon_health[1], my_pokemon_attack[1]]
-    v.add_row [my_pokemon_name[2], my_pokemon_health[2], my_pokemon_attack[2]]
-  end
-  puts user_table
-end
 
-def find_comp_pokemon
   comp_user_pokemon = UserPokemon.all.select { |userpokemon| userpokemon.user_id == @comp.id }
   comp_pokemon_name = comp_user_pokemon.map { |up| up.pokemon.name.capitalize }
   comp_pokemon_health = comp_user_pokemon.map { |up| up.pokemon.health}
   comp_pokemon_attack = comp_user_pokemon.map { |up| up.pokemon.attack}
-  # puts "your pokemon are: #{my_pokemon_name}"
   user_table = Terminal::Table.new do |v|
-    v.title = "The Computer's Pokemon Team"
-    v.headings = 'Pokemon', 'Health', 'Attack'
-    v.add_row [comp_pokemon_name[0], comp_pokemon_health[0], comp_pokemon_attack[0]]
-    v.add_row [comp_pokemon_name[1], comp_pokemon_health[1], comp_pokemon_attack[1]]
-    v.add_row [comp_pokemon_name[2], comp_pokemon_health[2], comp_pokemon_attack[2]]
+    v.title = "Let's battle!"
+    v.add_row  ["Your Pokemon Team", "The Computer's Pokemon Team"]
+    v.style = {:width => 80}
+  end
+  bottom = Terminal::Table.new do |v|
+    v.add_row ['Pokemon', 'Health', 'Attack', 'Pokemon', 'Health', 'Attack']
+    v.add_separator
+    v.add_row [my_pokemon_name[0], my_pokemon_health[0], my_pokemon_attack[0], comp_pokemon_name[0], comp_pokemon_health[0], comp_pokemon_attack[0]]
+    v.add_row [my_pokemon_name[1], my_pokemon_health[1], my_pokemon_attack[1], comp_pokemon_name[1], comp_pokemon_health[1], comp_pokemon_attack[1]]
+    v.add_row [my_pokemon_name[2], my_pokemon_health[2], my_pokemon_attack[2], comp_pokemon_name[2], comp_pokemon_health[2], comp_pokemon_attack[2]]
+    v.style = { :border_top => false,:width => 80}
   end
   puts user_table
+  puts bottom
 end
-
-# def user_pokemon
-#   puts User.all.find_by(id: 1)
-# end
-# user_table = Terminal::Table.new do |v|
-#   v.title = "Your Pokemon Team"
-#   v.headings = 'Pokemon', 'Health', 'Attack'
-#   v.add_row [1, greeting]
-#   # v << %w(  )
-#   # v << %w( Bob Someone bob@vision-media.ca )
-#   # v << %w( Joe Whatever bob@vision-media.ca )
-# end
-# puts user_table
-#
-# comp_table = Terminal::Table.new do |v|
-#   v.title = "The Computers Pokemon Team"
-#   v.headings = 'Pokemon', 'Health', 'Attack'
-#   v << %w( TJ Holowaychuk tj@vision-media.ca )
-#   v << %w( Bob Someone bob@vision-media.ca )
-#   v << %w( Joe Whatever bob@vision-media.ca )
-# end
-# puts comp_table
 
 
 # def delete_user_table
