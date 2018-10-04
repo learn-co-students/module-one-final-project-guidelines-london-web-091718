@@ -121,7 +121,6 @@ end
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
     exit?(city_more)
-    history?(argument,user)
     if city_more == "n"
     elsif city_more=="y"
       puts "Loading city information..."

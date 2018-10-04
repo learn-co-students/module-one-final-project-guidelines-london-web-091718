@@ -3,9 +3,6 @@ class CreateCityTable < ActiveRecord::Migration[5.0]
   def change
     create_table :cities do |t|
       t.string :name
-      t.string :urban_area
-      t.string :country
-      t.string :quality_of_life
       t.string :Housing
       t.string :"Cost of Living"
     t.string   :Startups
