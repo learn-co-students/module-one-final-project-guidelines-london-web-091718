@@ -20,5 +20,8 @@ belongs_to :user
     brr.uniq.max_by{ |i| brr.count( i ) }
   end
 
-
+  def self.latest_job_posts_from_db
+    Job.order("created_at").last
+  end
+  
 end

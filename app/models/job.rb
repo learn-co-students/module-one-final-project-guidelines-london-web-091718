@@ -37,17 +37,11 @@ class Job < ActiveRecord::Base
     #add <i> , <br> etc
   end
 
-  def self.most_popular_cities_from_db
-  end
 
-  def self.full_time_roles_from_db
-  end
 
   def self.best_quality_of_life_score_from_db
   end
 
-  def self.latest_job_posts_from_db
 
-  end
 
 end

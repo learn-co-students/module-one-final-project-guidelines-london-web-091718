@@ -9,6 +9,7 @@ has_many :cityjobs
     User.count
   end
 
+  
 
 
 end
