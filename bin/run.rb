@@ -1,6 +1,7 @@
 require_relative '../config/environment'
 require "pry"
 
+<<<<<<< HEAD
 #
 # greeting
 # get_character_from_user
@@ -41,3 +42,12 @@ fight(player_pokemons[2], comp_pokemons[2])
 winner(player_pokemons, comp_pokemons)
 
 puts "GAME OVER"
+=======
+get_character_from_user(greeting, comp)
+find_user_and_comp_pokemon
+winner_or_loser
+#user_table
+# delete_user_table
+# delete_userpokemon_table
+puts "EOF"
+>>>>>>> 4419fcbd5d43c50be71006a13f2e179d08898b6c
