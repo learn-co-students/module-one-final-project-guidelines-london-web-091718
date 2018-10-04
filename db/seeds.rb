@@ -52,4 +52,4 @@ require 'pry'
     end
   end
 
-  # create_pokemon_instances(pokemon_array)
+  create_pokemon_instances(pokemon_array)
