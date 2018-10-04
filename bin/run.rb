@@ -9,12 +9,13 @@ loop do
   list_of_results=result_list(job_results)
   chosen_job=chosen_job(list_of_results)
   cityjob=more_results_with_error_test(chosen_job,job_search_results(job_query))
-  # cityjob.user_id=new_user.id
-  #cityjob.save
 end
-#remove from schema first 3 city stats as they are useless
 
-#implement looping into history
+#CRITICAL:
+  #make possible viewing of history
+  #make user able to access search history
+  #make him able to access job and city via history
+#OPTIONAL:
+#(or at least viewing of it)
 #functions like search_saved_jobs
 #cities_i'm_interested_in, etc...
-#SELECT CITY input letter gets the last entry in the list
