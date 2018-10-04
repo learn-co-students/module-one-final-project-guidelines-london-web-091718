@@ -93,7 +93,6 @@ def find_user_and_comp_pokemon
   puts bottom
 end
 
-
 def winner_or_loser
   winner = "  dP    dP                      dP   dP   dP oo
   Y8.  .8P                      88   88   88
@@ -131,7 +130,6 @@ oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
   #   # end
   #
 end
-
 
 # def delete_user_table
 #   User.destroy_all
