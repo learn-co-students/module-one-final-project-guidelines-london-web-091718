@@ -1,14 +1,22 @@
 require_relative '../config/environment'
 
+def history?(argument,user)
+  if argument=="history"
+    puts CityJob.all.find_by(user_id: user.id)
+  end
+  argument
+end
 
 user=welcome_user
-new_user=User.find_or_create_by(name: user)
 job_query=search_query(user)
 loop do
   job_results=job_search_results(job_query)
   list_of_results=result_list(job_results)
   chosen_job=chosen_job(list_of_results)
   cityjob=more_results_with_error_test(chosen_job,job_search_results(job_query))
+#  cityjob.user_id=user.id
+#  cityjob.save
+  #DO NOT TOUCH ABOVE LINE ^
 end
 
 #CRITICAL:

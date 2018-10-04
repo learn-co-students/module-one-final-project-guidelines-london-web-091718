@@ -19,7 +19,6 @@ def welcome_user
   puts "Welcome to our tech jobsearch! Please enter your name:"
   username = STDIN.gets.chomp
   exit?(username)
-  history?(username,username)
   user_search = User.all.find_or_create_by(name: username)
   #looks the user up in the DB by name
   puts "Welcome, #{username}."
@@ -37,21 +36,21 @@ def search_query(user)
   puts Rainbow("Please enter the city:").green
   puts "Press enter to search by language instead. You can enter 'exit' to exit anytime."
   city = STDIN.gets.chomp
-  exit?(city)
   history?(city,user)
+  exit?(city)
   search_parameter[:city]=city
 
   puts Rainbow("Please enter your preferred programming language:").green
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
-  exit?(lang)
   history?(lang,user)
+  exit?(lang)
   puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
   keywords = STDIN.gets.chomp
   search_parameter[:keywords]=keywords
 
-  exit?(keywords)
   history?(keywords,user)
+  exit?(keywords)
   would_you_like_to_save(user, search_parameter)
   return search_parameter
 end
@@ -62,7 +61,7 @@ def would_you_like_to_save(user,data_hash)
     #method for requesting user to save data to db:
   puts "Would you like to save these details for future searches? [Y]es or [N]o?"
   ans=STDIN.gets.chomp.downcase
-    history?(ans,user)
+  history?(ans,user)
   exit?(ans)
   if ans == "y"
     user.update(data_hash)
@@ -151,7 +150,7 @@ def formatting_categories(categories)
   cats
 end
 
-def store_cityjob_in_database(city,job,city_stats,url="")
+def store_cityjob_in_database(city,job,city_stats,user="")
   #read this once again ^
   hash={}
   ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
@@ -179,8 +178,8 @@ def store_cityjob_in_database(city,job,city_stats,url="")
 end
 
 def history?(argument,user)
-  if argument=="history"
-    puts user
+  if argument.downcase=="history"
+    puts CityJob.all.find_by(user: user)
   end
   argument
 end
