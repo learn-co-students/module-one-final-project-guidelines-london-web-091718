@@ -5,6 +5,7 @@ class AddUserTable < ActiveRecord::Migration[5.0]
       t.string :language
       t.string :city
       t.string :keywords
+      t.timestamps
     end
   end
 end

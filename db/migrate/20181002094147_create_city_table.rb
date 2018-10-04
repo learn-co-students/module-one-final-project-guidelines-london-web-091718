@@ -20,6 +20,7 @@ class CreateCityTable < ActiveRecord::Migration[5.0]
     t.string    :"Leisure & Culture"
     t.string    :Tolerance
     t.string    :Outdoors
+    t.timestamps
     end
   end
 end

@@ -9,11 +9,12 @@ class Job < ActiveRecord::Base
 
   def self.remove_html_tags(item)
     re = /<("[^"]*"|'[^']*'|[^'">])*>/
-    item.gsub!(re, '')
+    rtn_str = item.gsub!(re, '')
+    rtn_str
   end
 
-  def self.format_result(data, i, verbose = false)
-    puts Rainbow("#{i} ====================================================================").yellow
+  def self.format_result(data, verbose = false)
+    puts Rainbow("====================================================================").yellow
     puts Rainbow("Title: ").red + data["title"]
     puts Rainbow("Company: ").red + data["company"]
     puts Rainbow("Location: ").red + data["location"]
@@ -26,7 +27,8 @@ class Job < ActiveRecord::Base
       else
         des = data["description"]
       end
-      puts Rainbow("Description: ").red + remove_html_tags(des)
+      # binding.pry
+      puts Rainbow("Description: ").red + des #remove_html_tags(des)
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key)
       # puts "URL: " + data["url"].gsub(URI.regexp, '<a href="\0">\0</a>')
       puts ""
@@ -41,7 +43,7 @@ class Job < ActiveRecord::Base
       if data["description"] == nil
         des = " something "
       else
-        des = remove_html_tags(data["description"][0..100])
+        des = data["description"][0..100] #remove_html_tags(data["description"][0..100])
       end
       puts Rainbow("Description: ").red + des + "..."
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key) + "..."

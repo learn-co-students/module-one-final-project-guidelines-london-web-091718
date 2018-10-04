@@ -5,6 +5,7 @@ class CreateCityJobsTable < ActiveRecord::Migration[5.0]
       t.integer :city_id
       t.integer :job_id
       t.integer :user_id
+      t.timestamps
     end
   end
 end

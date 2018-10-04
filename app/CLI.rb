@@ -10,13 +10,19 @@ def welcome_user
 end
 
 def show_history(user)
-  puts "Here's the user search history:"
-  located_cityjob=CityJob.all.where(user: user)
+  puts "\nHere's the user search history:"
+  located_cityjob=CityJob.all.where(user: user).limit(10)
   if located_cityjob
     located_cityjob.each do |history|
-      puts "User: " + history.user.name
-      puts "Job: " + history.job.title
-      puts "Location: "+history.city.name
+      table = Terminal::Table.new do |t|
+        t.add_row ["Searched: ", DateTime.parse(history[:created_at].to_s).strftime("%A, %d/%m/%Y")]
+        t.add_row ["User: ", history.user.name]
+        t.add_row ["Job: ", history.job.title]
+        t.add_row ["Location: ", history.city.name]
+        t.style = {:all_separators => true}
+      end
+      puts table
+      puts ""
     end
   end
   main_menu(user)
@@ -35,28 +41,24 @@ def exit?(parameter)
 end
 
 def main_menu(user)
-  # system "clear"
-  # loop do
-    puts "\nMain Menu"
-    prompt = TTY::Prompt.new
-    selection = prompt.select("\nWhat would you like to do?") do |menu|
-      menu.default 1
+  puts "\nMain Menu"
+  prompt = TTY::Prompt.new
+  selection = prompt.select("\nWhat would you like to do?") do |menu|
+    menu.default 1
 
-      menu.choice 'Seach for a new job', 1
-      menu.choice 'View search history', 2
-      menu.choice 'Exit', 3
-    end
+    menu.choice 'Seach Jobs List', 1
+    menu.choice 'View search history', 2
+    menu.choice 'Exit', 3
+  end
 
-    case selection
-    when 1
-      search_query(user)
-    when 2
-      show_history(user)
-    when 3
-      leave_app
-    end
-  # end
-
+  case selection
+  when 1
+    search_query(user)
+  when 2
+    show_history(user)
+  when 3
+    leave_app
+  end
 end
 
 
@@ -87,12 +89,9 @@ def search_query(user)
 
   would_you_like_to_save(user, search_parameter)
 
-  # return search_parameter
   job_search_results = search_source(search_parameter)
 
   checked_results = check_results(job_search_results, user)
-
-  # chosen_job = choose_job(checked_results)
 end
 
 
@@ -127,14 +126,12 @@ end
 
 def check_results(job_search_results, user)
   list_of_results= []
-  i = 1
   job_search_results.each do |result|
-    Job.format_result(result,i, false)
-    i += 1
+    Job.format_result(result, false)
     list_of_results << result
   end
   if list_of_results.length == 0
-    puts "Sorry, no results found. Please try to search again!"
+    puts "\nSorry, no results found. Please try to search again!"
     main_menu(user)
   end
   list_of_results
@@ -148,8 +145,8 @@ def choose_job(list_of_results, user)
     choose_job(list_of_results, user)
   end
   chosen_job = list_of_results.find{|hash| hash["title"] == prompty}
-  puts Job.format_result(chosen_job, "", true)
-  # return chosen_job
+  puts Job.format_result(chosen_job, true)
+
   more_results_with_error_test(chosen_job, list_of_results, user)
 end
 
@@ -165,7 +162,7 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
   end
 
   if chosen_job['location'].downcase=="remote"
-    "Sorry, either this job is remote or this city does not exist. Try another listing."
+    "\nSorry, either this job is remote or this city does not exist. Try another listing."
     choose_job(list_of_results, user)
   else
     new_city = City.find_or_create_by(name: chosen_job["location"])
@@ -185,7 +182,7 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
       puts 'Access denied'
       return err.response
     rescue RestClient::ExceptionWithResponse => err
-      puts "\nSorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page."
+      puts "\nSorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page.\n"
       choose_job(list_of_results, user)
     else
       puts "Fetching information about #{city_variable}..."
@@ -194,7 +191,8 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
           puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
       end#each
       new_city.update(formatting_categories(categories))
-      puts "\nYour search has been added to your search history.\n"
+      puts "\nYour search has been added to your search history."
+      puts ""
       choose_job(list_of_results, user)
     end#rescue
   when 2
@@ -216,32 +214,3 @@ def formatting_categories(categories)
   end
   cats
 end
-
-# def store_cityjob_in_database(city,job,city_stats,user="")
-#   read this once again ^
-#   hash={}
-#   ncm=city_stats.map{|(k,v)| [k.to_sym,v]}
-#   ncm.each do |arr|
-#     hash[arr[0]]=arr[1]
-#   end
-#   c=City.find_or_create_by(name: city)
-#   j=Job.new
-#   j.title=job
-#   cityjob=CityJob.new
-#   cityjob.name=("#{city} - #{job}")
-#   cityjob.city=c
-#   cityjob.job=j
-#   cityjob.city.update(hash)
-#   c.save
-#   j.save
-#   cityjob.save
-#   puts "Your search has been added to your search history."
-#
-#
-#   puts "Enter anything to return back to the result list"
-#   puts ""
-#   gets
-#   puts "Returning you to the results list..."
-#   puts ""
-#   return cityjob
-# end
