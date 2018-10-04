@@ -14,7 +14,7 @@ class Job < ActiveRecord::Base
     puts Rainbow("Location: ").red + data["location"]
     puts Rainbow("Date added: ").red + data["created_at"]
     des = ''
-    easyTAPI_key = 'AIzaSyAuWrOhCrtnEaoABagC6r0EpGN4OdQP8qU'
+    #easyTAPI_key = 'AIzaSyAuWrOhCrtnEaoABagC6r0EpGN4OdQP8qU'
     if verbose
       des = data["description"]
       puts Rainbow("Description: ").red + des

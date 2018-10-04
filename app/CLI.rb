@@ -99,12 +99,15 @@ end
 
 def chosen_job(list_of_results)
   prompt = TTY::Prompt.new
-  prompty=prompt.multi_select("Select a listing", list_of_results.map {|m| m["title"]})
-  if prompty.length==0
-    puts "Please select with space and then hit enter"
-    chosen_job(list_of_results)
-  end
-  chosen_job=list_of_results.find{|hash| hash["title"]==prompty[0]}
+  prompty=prompt.select("Select a listing", list_of_results.map {|m| m["title"]})
+  puts prompty
+  # if prompty.length==0
+  #   puts "Please select with space and then hit enter"
+  #   chosen_job(list_of_results)
+  # end
+  binding.pry
+  chosen_job=list_of_results.find{|hash| hash["title"]==prompty}
+  puts chosen_job
   puts Job.format_result(chosen_job, "", true)
   return chosen_job
 end
