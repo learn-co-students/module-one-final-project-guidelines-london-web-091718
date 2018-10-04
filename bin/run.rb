@@ -16,19 +16,19 @@ require "pry"
 # User.create(name: "Computer")
 # User.create(name: "Player")
 #
-# computer = User.find_by(name: 'Computer')
-# player = User.find_by(name: 'Player')
+computer = User.find_or_create_by(name: 'Player')
+player = User.find_or_create_by(name: 'Computer')
 #
-# UserPokemon.create(pokemon_id: 3, user_id: computer.id)
-# UserPokemon.create(pokemon_id: 7, user_id: computer.id)
-# UserPokemon.create(pokemon_id: 10, user_id: computer.id)
+UserPokemon.find_or_create_by(pokemon_id: 3, user_id: computer.id)
+UserPokemon.find_or_create_by(pokemon_id: 7, user_id: computer.id)
+UserPokemon.find_or_create_by(pokemon_id: 10, user_id: computer.id)
 #
-# UserPokemon.create(pokemon_id: 6, user_id: player.id)
-# UserPokemon.create(pokemon_id: 34, user_id: player.id)
-# UserPokemon.create(pokemon_id: 16, user_id: player.id)
+UserPokemon.find_or_create_by(pokemon_id: 6, user_id: player.id)
+UserPokemon.find_or_create_by(pokemon_id: 34, user_id: player.id)
+UserPokemon.find_or_create_by(pokemon_id: 16, user_id: player.id)
 #
-player_pokemons = User.find_by(name: 'Player').user_pokemons
-comp_pokemons = User.find_by(name: 'Computer').user_pokemons
+player_pokemons = player.user_pokemons
+comp_pokemons = computer.user_pokemons
 
 
 
