@@ -68,8 +68,8 @@ end
 
 def search_query(user)
   city = ''
-  language = ''
-  job = ''
+  lang = ''
+  keywords = ''
   search_parameter=Hash.new(0)
 
 
@@ -147,9 +147,9 @@ end
       chosen_job = list_of_results[chosen_job_num.to_i - 1]
       puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
       puts ""
-      end
-      return chosen_job
     end
+      return chosen_job
+  end
 
 
   def more_results_with_error_test(chosen_job,job_results_function)
