@@ -7,6 +7,11 @@ class Job < ActiveRecord::Base
     "https://jobs.github.com/positions.json?description=" + description + " "+ language + "&location=" + location
   end
 
+  def self.remove_html_tags(item)
+    re = /<("[^"]*"|'[^']*'|[^'">])*>/
+    item.gsub!(re, '')
+  end
+
   def self.format_result(data, i, verbose = false)
     puts Rainbow("#{i} ====================================================================").yellow
     puts Rainbow("Title: ").red + data["title"]
@@ -14,10 +19,14 @@ class Job < ActiveRecord::Base
     puts Rainbow("Location: ").red + data["location"]
     puts Rainbow("Date added: ").red + data["created_at"]
     des = ''
-    easyTAPI_key = 'AIzaSyAuWrOhCrtnEaoABagC6r0EpGN4OdQP8qU'
+    # easyTAPI_key = 'AIzaSyAuWrOhCrtnEaoABagC6r0EpGN4OdQP8qU'
     if verbose
-      des = data["description"]
-      puts Rainbow("Description: ").red + des.split("<p>").join("</p>").split("</p>").join("<br>").split("<br>").join("<ul>").split("<ul>").join("<li>").split("<li>").join("<h1>").split("<h1>").join("<h4>").split("<h4>").join("")
+      if data["description"] == nil
+        des = " something "
+      else
+        des = data["description"]
+      end
+      puts Rainbow("Description: ").red + remove_html_tags(des)
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key)
       # puts "URL: " + data["url"].gsub(URI.regexp, '<a href="\0">\0</a>')
       puts ""
@@ -29,7 +38,11 @@ class Job < ActiveRecord::Base
       puts Rainbow("URL: ").red + data["url"]
       puts ""
     else
-      des = data["description"][0..100].split("<p>").join("</p>").split("</p>").join("<br>").split("<br>").join("<ul>").split("<ul>").join("<li>").split("<li>").join("<h1>").split("<h1>").join("<h4>").split("<h4>").join("")
+      if data["description"] == nil
+        des = " something "
+      else
+        des = remove_html_tags(data["description"][0..100])
+      end
       puts Rainbow("Description: ").red + des + "..."
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key) + "..."
       puts ""
