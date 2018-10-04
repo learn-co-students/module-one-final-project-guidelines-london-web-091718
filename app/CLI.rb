@@ -1,5 +1,5 @@
 #MAKE A LIST OF THE SEQUENCE OF COMMANDS
-
+require 'tty-prompt'
 require 'rest-client'
 require 'json'
 require "pry"
@@ -77,21 +77,21 @@ def search_query(user)
   puts "Press enter to search by language instead. You can enter 'exit' to exit anytime."
   city = STDIN.gets.chomp
   exit?(city)
-  history?(city)
+  history?(city,user)
   search_parameter[:city]=city
 
-  puts Rainbow("Please enter your preffered programming language:").green
+  puts Rainbow("Please enter your preferred programming language:").green
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
 
   exit?(lang)
-  history?(lang)
+  history?(lang,user)
   puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
   keywords = STDIN.gets.chomp
   search_parameter[:keywords]=keywords
 
   exit?(keywords)
-  history?(lang)
+  history?(keywords,user)
   puts search_parameter
   would_you_like_to_save(user, search_parameter)
   return search_parameter
@@ -137,6 +137,7 @@ end
 
   def chosen_job(list_of_results)
     # FORCE IT TO_INTEGERT
+    #take care of this (if finds 0 results or if user inputs fdsfdsfsd )
     puts "Select a number from the above list to view further job details"
     chosen_job_num = gets
     if (chosen_job_num.to_i.is_a? Integer)==false
@@ -159,7 +160,8 @@ end
     puts "Would you like to see more info about the city?"
     city_more=gets.chomp
     exit?(city_more)
-    if city_more=="y"
+    if city_more == "n"
+    elsif city_more=="y"
       puts "Loading city information..."
       city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
       # binding.pry
@@ -181,7 +183,6 @@ end
           end#each
           store_cityjob_in_database(chosen_job["location"], chosen_job["title"],formatting_categories(categories))
       end#rescue
-      elsif city_more=="n"#if
     else
       puts "please provide a valid command"
       more_results_with_error_test(chosen_job,job_results_function)
@@ -221,17 +222,18 @@ def store_cityjob_in_database(city,job,city_stats,url="")
   c.save
   j.save
   cityjob.save
-
   puts "Your search has been added to your search history"
-  puts ""
+  puts "Enter anything to return back to the result list"
   puts ""
   gets
   puts "Returning you to the results list..."
   puts ""
+  return cityjob
 end
 
-def History?(argument)
+def history?(argument,user)
+#  binding.pry
   if argument=="history"
-    CityJob.find_by(user.name = @@name)
+    puts user
   end
 end

@@ -4,7 +4,6 @@ class Job < ActiveRecord::Base
   has_many :cities, through: :cityjobs
 
   def self.base_url(description = "", language="", location = "")
-
     "https://jobs.github.com/positions.json?description=" + description + " "+ language + "&location=" + location
   end
 
