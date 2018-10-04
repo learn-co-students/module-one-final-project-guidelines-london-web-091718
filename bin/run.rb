@@ -14,8 +14,8 @@ loop do
   list_of_results=result_list(job_results)
   chosen_job=chosen_job(list_of_results)
   cityjob=more_results_with_error_test(chosen_job,job_search_results(job_query))
-#  cityjob.user_id=user.id
-#  cityjob.save
+  cityjob.user=user
+  cityjob.save
   #DO NOT TOUCH ABOVE LINE ^
 end
 
