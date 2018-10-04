@@ -1,9 +1,8 @@
 #MAKE A LIST OF THE SEQUENCE OF COMMANDS
-require 'tty-prompt'
 require 'rest-client'
+require 'tty-prompt'
 require 'json'
 require "pry"
-@@user=""
 
 def exit?(parameter)
   if parameter.downcase=="exit"
@@ -27,8 +26,9 @@ end
 def saving_query(user,language)
   #CURRENTLY UNUSED
   #asks if the user would like to save his info
-  puts "Would you like to save the information? (y/n)"
-  answer = STDIN.gets.chomp
+  puts
+  prompt = TTY::Prompt.new
+  prompt.yes?("Would you like to save the information?")
   exit?(answer)
   if answer == "y"
     @@user=user
@@ -65,7 +65,6 @@ def welcome_user
 end
 
 
-
 def search_query(user)
   city = ''
   lang = ''
@@ -92,10 +91,8 @@ def search_query(user)
 
   exit?(keywords)
   history?(keywords,user)
-  puts search_parameter
   would_you_like_to_save(user, search_parameter)
   return search_parameter
-
 end
 
 
@@ -138,20 +135,23 @@ end
   def chosen_job(list_of_results)
     # FORCE IT TO_INTEGERT
     #take care of this (if finds 0 results or if user inputs fdsfdsfsd )
-    puts "Select a number from the above list to view further job details"
-    chosen_job_num = gets
-    if (chosen_job_num.to_i.is_a? Integer)==false
-      puts "Please select a valid listing!"
-      chosen_job(list_of_results)
-    elsif chosen_job_num.to_i>list_of_results.length
-      puts "Please select a valid listing!"
-      chosen_job(list_of_results)
-    else
-      chosen_job = list_of_results[chosen_job_num.to_i - 1]
-      puts Job.format_result(list_of_results[chosen_job_num.to_i - 1], chosen_job_num, true)
-      puts ""
-    end
+    q=""
+  if list_of_results.length>0
+    prompt = TTY::Prompt.new
+    prompty=prompt.multi_select("Select a listing", list_of_results.map {|m| m["title"]})
+    chosen_job=list_of_results.find{|hash| hash["title"]==prompty[0]}
+else
+    puts "no results found. Please try to search again."
+    exit(0)
+  end
+#binding.pry
+    #puts "Select a number from the above list to view further job details"
+      puts Job.format_result(chosen_job, "", true)
       return chosen_job
+    
+    #   puts ""
+    # end
+
   end
 
 
