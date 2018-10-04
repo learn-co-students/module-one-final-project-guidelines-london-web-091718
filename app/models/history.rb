@@ -1,3 +1,0 @@
-def History?(argument)
-  
-end
