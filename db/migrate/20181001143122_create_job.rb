@@ -6,6 +6,7 @@ class CreateJob < ActiveRecord::Migration[5.0]
       t.boolean :full_time
       t.text :description
       t.string :company
+      t.string :url
       t.timestamps
     end
   end

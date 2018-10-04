@@ -167,6 +167,8 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
   else
     new_city = City.find_or_create_by(name: chosen_job["location"])
     new_job = Job.find_or_create_by(title: chosen_job["title"])
+    full_time = (chosen_job["type"] == "Full Time")
+    new_job.update(full_time: full_time, company: chosen_job["company"], description: chosen_job["description"], url: chosen_job["url"])
     cityjob = CityJob.new(name: "#{chosen_job["location"]} - #{chosen_job["title"]}", city_id: new_city.id, job_id: new_job.id, user_id: user.id)
     cityjob.save
   end
