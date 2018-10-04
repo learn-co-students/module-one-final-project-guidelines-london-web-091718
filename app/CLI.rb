@@ -77,19 +77,21 @@ def search_query(user)
   puts "Press enter to search by language instead. You can enter 'exit' to exit anytime."
   city = STDIN.gets.chomp
   exit?(city)
+  history?(city)
   search_parameter[:city]=city
 
-  exit?(city)
   puts Rainbow("Please enter your preffered programming language:").green
   lang = STDIN.gets.chomp
   search_parameter[:language]=lang
 
   exit?(lang)
+  history?(lang)
   puts Rainbow("Please enter a keyword e.g 'Full-Stack'").green
   keywords = STDIN.gets.chomp
   search_parameter[:keywords]=keywords
 
   exit?(keywords)
+  history?(lang)
   puts search_parameter
   would_you_like_to_save(user, search_parameter)
   return search_parameter
@@ -162,7 +164,7 @@ end
       city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
       # binding.pry
       begin
-        resp =RestClient.get("https://api.teleport.org/api/urban_areas/slug:#{ity_variable}/scores/")
+        resp =RestClient.get("https://api.teleport.org/api/urban_areas/slug:#{city_variable}/scores/")
       rescue RestClient::Unauthorized, RestClient::Forbidden => err
         puts 'Access denied'
         return err.response
@@ -216,7 +218,6 @@ def store_cityjob_in_database(city,job,city_stats,url="")
   cityjob.city=c
   cityjob.job=j
   cityjob.city.update(hash)
-  cityjob.user=@@user if @@user!=""
   c.save
   j.save
   cityjob.save
@@ -224,6 +225,13 @@ def store_cityjob_in_database(city,job,city_stats,url="")
   puts "Your search has been added to your search history"
   puts ""
   puts ""
+  gets
   puts "Returning you to the results list..."
   puts ""
+end
+
+def History?(argument)
+  if argument=="history"
+    CityJob.find_by(user.name = @@name)
+  end
 end

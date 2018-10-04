@@ -2,6 +2,7 @@ require_relative '../config/environment'
 
 
 user=welcome_user
+new_user=User.find_or_create(name: user)
 job_query=search_query(user)
 loop do
   job_results=job_search_results(job_query)
