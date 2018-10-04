@@ -17,7 +17,7 @@ class Job < ActiveRecord::Base
     easyTAPI_key = 'AIzaSyAuWrOhCrtnEaoABagC6r0EpGN4OdQP8qU'
     if verbose
       des = data["description"]
-      puts Rainbow("Description: ").red + des
+      puts Rainbow("Description: ").red + des.split("<p>").join("</p>").split("</p>").join("<br>").split("<br>").join("<ul>").split("<ul>").join("<li>").split("<li>").join("<h1>").split("<h1>").join("<h4>").split("<h4>").join("")
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key)
       # puts "URL: " + data["url"].gsub(URI.regexp, '<a href="\0">\0</a>')
       puts ""
