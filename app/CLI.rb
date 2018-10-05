@@ -194,6 +194,18 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
         new_city.update(formatting_categories(categories))
         puts "\nYour search has been added to your search history."
         puts ""
+        visit = prompt.select(Rainbow("\nWould you like to visit the listing online?").green) do |menu|
+          menu.default 1
+
+          menu.choice 'Yes', 1
+          menu.choice 'No', 2
+        end
+        case visit
+        when 1
+          Launchy.open(chosen_job['url'])
+        when 2
+          choose_job(list_of_results, user)
+        end
       end#rescue
       choose_job(list_of_results, user)
     when 2

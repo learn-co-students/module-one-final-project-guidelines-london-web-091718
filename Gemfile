@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 source "https://rubygems.org"
+gem "launchy"
 gem "terminal-table"
 gem "tty-prompt"
 gem "easy_translate"
