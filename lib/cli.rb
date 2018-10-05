@@ -29,7 +29,24 @@ end
 
 
 def greeting
-  puts "Greetings young Pokemon Trainer! Welcome to the Pokemon battle grounds."
+  pokemon_ruby = Rainbow("
+ _______  _______  ___   _  _______  __   __  _______  __    _
+|       ||       ||   | | ||       ||  |_|  ||       ||  |  | |
+|    _  ||   _   ||   |_| ||    ___||       ||   _   ||   |_| |
+|   |_| ||  | |  ||      _||   |___ |       ||  | |  ||       |
+|    ___||  |_|  ||     |_ |    ___||       ||  |_|  ||  _    |
+|   |    |       ||    _  ||   |___ | ||_|| ||       || | |   |
+|___|    |_______||___| |_||_______||_|   |_||_______||_|  |__|
+               ______    __   __  _______  __   __
+              |    _ |  |  | |  ||  _    ||  | |  |
+              |   | ||  |  | |  || |_|   ||  |_|  |
+              |   |_||_ |  |_|  ||       ||       |
+              |    __  ||       ||  _   | |_     _|
+              |   |  | ||       || |_|   |  |   |
+              |___|  |_||_______||_______|  |___|
+").red
+  puts pokemon_ruby
+  puts "\nGreetings young Pokemon Trainer! Welcome to the Pokemon battle grounds."
 
   username = get_user_name
   @user = User.create(name: username)
@@ -50,7 +67,7 @@ def get_character_from_user(user, comp)
   count = 0
   pokemon_options = Pokemon.all.sample(10).map { |p| p.name  }
   instance = ["first", "second", "third"]
-  puts "\nBefore you can play you must catch your Pokemon to build your team. \nYour Pokemon options are:"
+  puts "\nBefore you can play, you must catch your Pokemon to build your team. \nYour Pokemon options are:"
   pokemon_options.each_with_index { |p, i| puts "#{i + 1}: #{p.capitalize}"}
   puts "Please note that you cannot choose the same Pokemon twice"
   while count < 3
@@ -60,7 +77,7 @@ def get_character_from_user(user, comp)
     UserPokemon.create(user: user, pokemon: chosen_pokemon)
     # pokemon_options.delete(pokemon_options[pokemon_choice.to_i - 1])
         if pokemon_options.include?(pokemon_options[pokemon_choice.to_i - 1]) && pokemon_options[pokemon_choice.to_i - 1]
-          puts "#{pokemon_options[pokemon_choice.to_i - 1].capitalize} has been added to your team\n"
+          puts Rainbow("#{pokemon_options[pokemon_choice.to_i - 1].capitalize} has been added to your team\n").green
           count += 1
           pokemon_options[pokemon_choice.to_i - 1] = nil
         else
@@ -88,7 +105,7 @@ def find_user_and_comp_pokemon
   comp_pokemon_attack = comp_user_pokemon.map { |up| up.pokemon.attack}
   user_table = Terminal::Table.new do |v|
     v.title = "Let's battle!"
-    v.add_row  ["Your Pokemon Team", "The Computer's Pokemon Team"]
+    v.add_row  [Rainbow("Your Pokemon Team").blue, Rainbow("The Computer's Pokemon Team").red]
     v.style = {:width => 80}
   end
   bottom = Terminal::Table.new do |v|
@@ -149,15 +166,18 @@ def round(player_pokemon, comp_pokemon, dice)
   else
     player_pokemon.pokemon.health -= comp_pokemon.pokemon.attack #comp attacks
   end
+  # system "clear"
+  # puts "Press enter to continue"
+  # gets.chomp
 end
 
 
 def stats(player_pokemon, comp_pokemon)
-  puts "\nYour Pokemon Stats:"
+  puts Rainbow("\nYour Pokemon Stats:").blue
   puts "  Name: #{player_pokemon.pokemon.name.capitalize}\n  Health: #{player_pokemon.pokemon.health}\n  Attack: #{player_pokemon.pokemon.attack}  \n"
 
 
-  puts "\nComputer Pokemon Stats:"
+  puts Rainbow("\nComputer Pokemon Stats:").red
   puts "  Name: #{comp_pokemon.pokemon.name.capitalize}\n  Health: #{comp_pokemon.pokemon.health}\n  Attack: #{comp_pokemon.pokemon.attack}  \n"
 
     # puts "Your Pokemon #{player_pokemon.pokemon.name.capitalize}'s health is now #{player_pokemon.pokemon.health}"
@@ -178,7 +198,8 @@ def fight(player_pokemon, comp_pokemon)
 
 
   while (comp_pokemon.pokemon.health >= 0 && player_pokemon.pokemon.health >= 0)
-    puts Rainbow("\n***** ROUND #{round} *****").red
+    puts "\n***** ROUND #{round} *****"
+    # puts Rainbow("\n***** ROUND #{round} *****").yellow
     round(player_pokemon, comp_pokemon, dice)
     stats(player_pokemon, comp_pokemon)
     if dice == 1
@@ -191,17 +212,21 @@ def fight(player_pokemon, comp_pokemon)
   end
 
   if player_pokemon.pokemon.health.to_i <= 0
-    puts "FIGHT FINISHED"
-    puts "\nYour Pokemon #{player_pokemon.pokemon.name.capitalize} has been defeated"
+    puts "******************************************"
+    puts "\nFIGHT FINISHED"
+    puts Rainbow("\nYour Pokemon #{player_pokemon.pokemon.name.capitalize} has been defeated").red
+    puts "******************************************"
 
 
     comp_pokemon.won += 1
     comp_pokemon.save
 
   elsif comp_pokemon[:health].to_i <= 0
-    puts "FIGHT FINISHED"
-    puts "\nThe Computer's Pokemon #{comp_pokemon.pokemon.name.capitalize} has been defeated"
-
+    # puts Rainbow("\nThe Computer's Pokemon #{comp_pokemon.pokemon.name.capitalize} has been defeated").red
+    puts "******************************************"
+    puts "\nFIGHT FINISHED"
+    puts Rainbow("\nYour Pokemon #{player_pokemon.pokemon.name.capitalize} has won.").blue
+    puts "\n******************************************"
 
     player_pokemon.won += 1
     player_pokemon.save
@@ -211,23 +236,23 @@ end
 
 def winner(player_pokemons, comp_pokemons)
 
-  winner = "  dP    dP                      dP   dP   dP oo
+  winner = Rainbow("  dP    dP                      dP   dP   dP oo
   Y8.  .8P                      88   88   88
    Y8aa8P  .d8888b. dP    dP    88  .8P  .8P dP 88d888b.
      88    88'  `88 88    88    88  d8'  d8' 88 88'  `88
      88    88.  .88 88.  .88    88.d8P8.d8P  88 88    88
      dP    `88888P' `88888P'    8888' Y88'   dP dP    dP
   ooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-  "
+  ").green
 
-  loser = "dP    dP                      dP
+  loser = Rainbow("dP    dP                      dP
 Y8.  .8P                      88
  Y8aa8P  .d8888b. dP    dP    88 .d8888b. .d8888b. .d8888b.
    88    88'  `88 88    88    88 88'  `88 Y8ooooo. 88ooood8
    88    88.  .88 88.  .88    88 88.  .88       88 88.  ...
    dP    `88888P' `88888P'    dP `88888P' `88888P' `88888P'
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-                                                            "
+                                                            ").red
 puts
    if player_pokemons.map {|w| w.won}.sum > comp_pokemons.map {|w| w.won}.sum
      # puts "this player's id number is: #{player_pokemons.first.user_id}"

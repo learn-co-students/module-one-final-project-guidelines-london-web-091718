@@ -1,7 +1,7 @@
 require_relative '../config/environment'
 require "pry"
 
-
+system "clear"
 get_character_from_user(greeting, comp)
 find_user_and_comp_pokemon
 
@@ -20,6 +20,7 @@ find_user_and_comp_pokemon
 #
 player_pokemons = player_pokemon_instances
 comp_pokemons = comp_pokemon_instances
+press_enter_to_continue
 # dice_roll
 fight(player_pokemons[0], comp_pokemons[0])
 press_enter_to_continue
