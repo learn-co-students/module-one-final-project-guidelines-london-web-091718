@@ -88,10 +88,6 @@ def search_query(user)
   search_parameter[:keywords]=keywords
 
   would_you_like_to_save(user, search_parameter)
-
-  job_search_results = search_source(search_parameter)
-
-  checked_results = check_results(job_search_results, user)
 end
 
 
@@ -109,8 +105,13 @@ def would_you_like_to_save(user,data_hash)
   case selection
   when 1
     user.update(data_hash)
+    job_search_results = search_source(data_hash)
+    checked_results = check_results(job_search_results, user)
+    chosen_job = choose_job(checked_results, user)
   when 2
-
+    job_search_results = search_source(data_hash)
+    checked_results = check_results(job_search_results, user)
+    chosen_job = choose_job(checked_results, user)
   when 3
     main_menu(user)
   end
@@ -140,10 +141,6 @@ end
 def choose_job(list_of_results, user)
   prompt = TTY::Prompt.new
   prompty = prompt.select("Select a listing", list_of_results.map {|m| m["title"]})
-  if prompty.length==0
-    puts "Please select with space and then hit enter"
-    choose_job(list_of_results, user)
-  end
   chosen_job = list_of_results.find{|hash| hash["title"] == prompty}
   puts Job.format_result(chosen_job, true)
 
@@ -155,14 +152,16 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
   prompt = TTY::Prompt.new
   city_more = prompt.select(Rainbow("\nWould you like to see more info about the city?").green) do |menu|
     menu.default 1
+
     menu.choice 'Yes', 1
     menu.choice 'No', 2
     menu.choice 'Go back to Main Menu', 3
     menu.choice 'Exit', 4
   end
-
-  if chosen_job['location'].downcase=="remote"
-    "\nSorry, either this job is remote or this city does not exist. Try another listing."
+  # binding.pry
+  if chosen_job["location"].downcase == "remote"
+    puts "\nSorry, either this job is remote or this city does not exist. Try another listing."
+    puts ""
     choose_job(list_of_results, user)
   else
     new_city = City.find_or_create_by(name: chosen_job["location"])
@@ -171,39 +170,41 @@ def more_results_with_error_test(chosen_job, list_of_results, user)
     new_job.update(full_time: full_time, company: chosen_job["company"], description: chosen_job["description"], url: chosen_job["url"])
     cityjob = CityJob.new(name: "#{chosen_job["location"]} - #{chosen_job["title"]}", city_id: new_city.id, job_id: new_job.id, user_id: user.id)
     cityjob.save
+
+    case city_more
+    when 1
+      #loads city info and stores in city db
+      puts "Loading city information..."
+      city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
+      begin
+        resp =RestClient.get("https://api.teleport.org/api/urban_areas/slug:#{city_variable}/scores/")
+      rescue RestClient::Unauthorized, RestClient::Forbidden => err
+        puts 'Access denied'
+        return err.response
+      rescue RestClient::ExceptionWithResponse => err
+        puts "\nSorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page.\n"
+        puts ""
+        choose_job(list_of_results, user)
+      else
+        puts "Fetching information about #{city_variable}..."
+        categories =  JSON.parse(resp)["categories"]
+        categories.each do |c|
+            puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
+        end#each
+        new_city.update(formatting_categories(categories))
+        puts "\nYour search has been added to your search history."
+        puts ""
+      end#rescue
+      choose_job(list_of_results, user)
+    when 2
+      choose_job(list_of_results, user)
+    when 3
+      main_menu(user)
+    when 4
+      leave_app
+    end
   end
 
-  case city_more
-  when 1
-    #loads city info and stores in city db
-    puts "Loading city information..."
-    city_variable = chosen_job['location'].downcase.split(",").split("(").split("-")[0][0][0].split(" ").join("-")
-    begin
-      resp =RestClient.get("https://api.teleport.org/api/urban_areas/slug:#{city_variable}/scores/")
-    rescue RestClient::Unauthorized, RestClient::Forbidden => err
-      puts 'Access denied'
-      return err.response
-    rescue RestClient::ExceptionWithResponse => err
-      puts "\nSorry, we are unable to find any info on that City at the moment :(. We will return you back to the results page.\n"
-      choose_job(list_of_results, user)
-    else
-      puts "Fetching information about #{city_variable}..."
-      categories =  JSON.parse(resp)["categories"]
-      categories.each do |c|
-          puts Rainbow("#{c['name']} : ").color(c['color']) + c['score_out_of_10'].to_i.to_s + " / 10"
-      end#each
-      new_city.update(formatting_categories(categories))
-      puts "\nYour search has been added to your search history."
-      puts ""
-      choose_job(list_of_results, user)
-    end#rescue
-  when 2
-    choose_job(list_of_results, user)
-  when 3
-    main_menu(user)
-  when 4
-    leave_app
-  end
 end#def
 
 def formatting_categories(categories)

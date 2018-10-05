@@ -2,10 +2,7 @@ require_relative '../config/environment'
 
 user = welcome_user
 
-loop do
-  results = main_menu(user)
-  chosen_job = choose_job(results, user)
-end
+main_menu(user)
 
 
 #CRITICAL:
