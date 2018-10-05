@@ -1,3 +1,4 @@
+
 class Job < ActiveRecord::Base
 
   has_many :cityjob
@@ -28,7 +29,7 @@ class Job < ActiveRecord::Base
         des = data["description"]
       end
       # binding.pry
-      puts Rainbow("Description: ").red + des #remove_html_tags(des)
+      puts Rainbow("Description: ").red + des.gsub(%r{</?[^>]+?>},'') #remove_html_tags(des)
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key)
       # puts "URL: " + data["url"].gsub(URI.regexp, '<a href="\0">\0</a>')
       puts ""
@@ -43,7 +44,7 @@ class Job < ActiveRecord::Base
       if data["description"] == nil
         des = " something "
       else
-        des = data["description"][0..100] #remove_html_tags(data["description"][0..100])
+        des = data["description"][0..100].gsub(%r{</?[^>]+?>},'') #remove_html_tags(data["description"][0..100])
       end
       puts Rainbow("Description: ").red + des + "..."
       # puts Rainbow("Description: ").red + EasyTranslate.translate(des, :to => :en, :key => easyTAPI_key) + "..."
