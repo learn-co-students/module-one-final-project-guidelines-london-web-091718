@@ -17,13 +17,13 @@ Additionally:
 - Various text elements are in different colours for ease of use and readability
 
 
-# Installation:
+# Installation
 
 To install:
 1. Clone the repository
-2. Run $ bundle install
-3. Run $ rake db:migrate
-4. $ ruby bin/run.rb to launch the CLI.
+2. Run ```bundle install```
+3. Run ```rake db:migrate```
+4. ```ruby bin/run.rb``` to launch the CLI.
 
 # Usage  
 
