@@ -1,57 +1,41 @@
-# Module One Final Project Guidelines
+# GitHub Job search and City Quality of Life project
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
+This software finds GitHub job listings using GitHub's API and saves it to the user's search history. After the user has read through the listing, they have the option to check the Quality of life stats of said city using the Socrata API and/or to open the listing in their default browser to proceed with their job application. The application:
 
-For your final project, we'll be building a Command Line database application.
+- Creates or finds the user from a database
+- Asks the user to type in a city/keywords for the job listings
+- Asks the user if they would like to store the current search in their profile
+- Allows to select the particular listing
+- Shows the listing with all HTML tags stripped
+- Asks the user if they would like to view the city statistics
+- Allows to open the job listing in the user's default browser
+- Saves the data stats to the database for further use
 
-## Project Requirements
+Additionally:
 
-### Option One - Data Analytics Project
+- User is able to see their history or return to main menu/exit the app at almost any point
+- Various text elements are in different colours for ease of use and readability
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have at minimum three models including one join model. This means you must have a many-to-many relationship.
-3. You should seed your database using data that you collect either from a CSV, a website by scraping, or an API.
-4. Your models should have methods that answer interesting questions about the data. For example, if you've collected info about movie reviews, what is the most popular movie? What movie has the most reviews?
-5. You should provide a CLI to display the return values of your interesting methods.  
-6. Use good OO design patterns. You should have separate classes for your models and CLI interface.
 
-### Option Two - Command Line CRUD App
+# Installation
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have a minimum of three models.
-3. You should build out a CLI to give your user full CRUD ability for at least one of your resources. For example, build out a command line To-Do list. A user should be able to create a new to-do, see all todos, update a todo item, and delete a todo. Todos can be grouped into categories, so that a to-do has many categories and categories have many to-dos.
-4. Use good OO design patterns. You should have separate models for your runner and CLI interface.
+To install:
+1. Clone the repository
+2. Run ```bundle install```
+3. Run ```rake db:migrate```
+4. ```ruby bin/run.rb``` to launch the CLI.
 
-### Brainstorming and Proposing a Project Idea
+# Usage  
 
-Projects need to be approved prior to launching into them, so take some time to brainstorm project options that will fulfill the requirements above.  You must have a minimum of four [user stories](https://en.wikipedia.org/wiki/User_story) to help explain how a user will interact with your app.  A user story should follow the general structure of `"As a <role>, I want <goal/desire> so that <benefit>"`. In example, if we were creating an app to randomly choose nearby restaurants on Yelp, we might write:
+Use arrow keys to navigate the interface, use space or enter to select an item.
 
-* As a user, I want to be able to enter my name to retrieve my records
-* As a user, I want to enter a location and be given a random nearby restaurant suggestion
-* As a user, I should be able to reject a suggestion and not see that restaurant suggestion again
-* As a user, I want to be able to save to and retrieve a list of favorite restaurant suggestions
+The CLI uses native ruby gems with the addition of:
+-ActiveRecord,
+-TTY-prompt,
+-Rainbow,
+-Launchy,
+-Terminal Table,
+-Rest-Client
+-SQlite3.
 
-## Instructions
-
-1. Fork and clone this repository.
-2. Build your application. Make sure to commit early and commit often. Commit messages should be meaningful (clearly describe what you're doing in the commit) and accurate (there should be nothing in the commit that doesn't match the description in the commit message). Good rule of thumb is to commit every 3-7 mins of actual coding time. Most of your commits should have under 15 lines of code and a 2 line commit is perfectly acceptable.
-3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code.
-4. Make sure your project checks off each of the above requirements.
-5. Prepare a video demo (narration helps!) describing how a user would interact with your working project.
-    * The video should:
-      - Have an overview of your project.(2 minutes max)
-6. Prepare a presentation to follow your video.(3 minutes max)
-    * Your presentation should:
-      - Describe something you struggled to build, and show us how you ultimately implemented it in your code.
-      - Discuss 3 things you learned in the process of working on this project.
-      - Address, if anything, what you would change or add to what you have today?
-      - Present any code you would like to highlight.   
-7. *OPTIONAL, BUT RECOMMENDED*: Write a blog post about the project and process.
-
----
-### Common Questions:
-- How do I turn off my SQL logger?
-```ruby
-# in config/environment.rb add this line:
-ActiveRecord::Base.logger = nil
-```
+All of the gems provided on rubygems. Documentation for each gem can be found in their respectful repositories.
